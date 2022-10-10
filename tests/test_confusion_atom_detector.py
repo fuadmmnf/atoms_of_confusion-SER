@@ -73,3 +73,9 @@ class TestConfusionAtomDetector(TestCase):
         expected = [True, False]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_dead_repeated(statements[i], next_statements[i]), expected[i])
+
+    def test_check_omitted_curly_braces(self):
+        statements = ["if (v1) f1(); f2();", "if (v1) {f1()}; f2();"]
+        expected = [True, False]
+        for i in range(len(statements)):
+            self.assertEqual(self.cad.check_omitted_curly_braces(statements[i]), expected[i])

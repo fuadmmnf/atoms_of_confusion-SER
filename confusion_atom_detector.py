@@ -164,3 +164,8 @@ class ConfusionAtomDetector:
         print(statement)
         print(next_statement)
         return True if lhs == next_lhs else False
+
+    def check_omitted_curly_braces(self, statement):
+        w = re.search("^if.*", statement)
+        print(statement)
+        return True if w and ('{' not in statement) else False
