@@ -49,7 +49,13 @@ class TestConfusionAtomDetector(TestCase):
             self.assertEqual(self.cad.check_conditional_operator(statements[i]), expected[i])
 
     def test_check_arithmetic_as_logic(self):
-        statements = ["(v1-3)*(v2-4)!=0;","v1!=3 && v2!=4"]
+        statements = ["(v1-3)*(v2-4)!=0;", "v1!=3 && v2!=4"]
         expected = [True, False]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_arithmetic_as_logic(statements[i]), expected[i])
+
+    def test_check_logic_as_control_flow(self):
+        statements = ["v1==++v1>0||++v2>0;", "v2==--v1<9&&v2++=0;"]
+        expected = [True, True]
+        for i in range(len(statements)):
+            self.assertEqual(self.cad.check_logic_as_control_flow(statements[i]), expected[i])

@@ -110,3 +110,10 @@ class ConfusionAtomDetector:
     def check_arithmetic_as_logic(self, statement):
         w = re.search(".+\*.+!=.+", statement)
         return True if w else False
+
+    def check_logic_as_control_flow(self, statement):
+        arithmetic_operators = "(\+\+|--|\+=|-=|\*=|/=|%=)"
+        w = re.search(f".*{arithmetic_operators}.*(\|\||&&).*{arithmetic_operators}.*", "v1=++v1>0||++v2>0;")
+        # print(w)
+        print(statement)
+        return True if w else False
