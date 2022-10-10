@@ -5,8 +5,8 @@ class ConfusionAtomDetector:
     totalAtomCount = 0
     _java_variable_regex = '[a-zA-z_]+[a-zA-z0-9]*'
 
-    def post_increment_decrement(self, code):
-        return re.compile(rf'{self._java_variable_regex}\s*(?:\+\+|--)').findall(code)
+    #def post_increment_decrement(self, code):
+    #    return re.compile(rf'{self._java_variable_regex}\s*(?:\+\+|--)').findall(code)
 
     def change_of_literal_encoding(self, statement):
         statement.replace(' ', '')
@@ -147,3 +147,20 @@ class ConfusionAtomDetector:
                 print(statement)
                 print(next_statement)
                 return True if res == j[0] else False
+
+    def check_dead_repeated(self, statement, next_statement):
+        statement.replace(" ", "")
+        x = re.split("=", statement)
+
+        lhs = x[0]
+        rhs = x[1]
+
+        next_statement.replace(" ", "")
+        y = re.split("=", next_statement)
+
+        next_lhs = y[0]
+        next_rhs = y[1]
+
+        print(statement)
+        print(next_statement)
+        return True if lhs == next_lhs else False
