@@ -106,3 +106,7 @@ class ConfusionAtomDetector:
         # w = re.search("[a-zA-z_]+[a-zA-z0-9_]*=[a-zA-z_]+[a-zA-z0-9_]*==[0-9]*?[0-9]*:[0-9]*;", statement)
         w = re.search(".+\?.+:.+", statement)
         return True if w else False
+
+    def check_arithmetic_as_logic(self, statement):
+        w = re.search(".+\*.+!=.+", statement)
+        return True if w else False

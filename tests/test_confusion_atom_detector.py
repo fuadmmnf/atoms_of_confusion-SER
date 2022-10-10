@@ -43,7 +43,13 @@ class TestConfusionAtomDetector(TestCase):
             self.assertEqual(self.cad.check_constant_variable(statements[i]), expected[i])
 
     def test_check_conditional_operator(self):
-        statements = ['v2=v1==3?2:1;','v1==3?2:1+v==5', 'if v1==3 {v2=2} else {v2=1}']
+        statements = ['v2=v1==3?2:1;', 'v1==3?2:1+v==5', 'if v1==3 {v2=2} else {v2=1}']
         expected = [True, True, False]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_conditional_operator(statements[i]), expected[i])
+
+    def test_check_arithmetic_as_logic(self):
+        statements = ["(v1-3)*(v2-4)!=0;","v1!=3 && v2!=4"]
+        expected = [True, False]
+        for i in range(len(statements)):
+            self.assertEqual(self.cad.check_arithmetic_as_logic(statements[i]), expected[i])
