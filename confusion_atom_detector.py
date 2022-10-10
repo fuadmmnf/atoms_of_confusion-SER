@@ -169,3 +169,8 @@ class ConfusionAtomDetector:
         w = re.search("^if.*", statement)
         print(statement)
         return True if w and ('{' not in statement) else False
+
+    def check_type_conversion(self, statement):
+        print(statement)
+        if ('(int)' or '(double)' or '(float)' or ('str')) in statement:
+            return False if ("Math.ceil" in statement) or ("Math.floor" in statement) else True

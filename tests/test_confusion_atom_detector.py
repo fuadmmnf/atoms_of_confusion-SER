@@ -79,3 +79,9 @@ class TestConfusionAtomDetector(TestCase):
         expected = [True, False]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_omitted_curly_braces(statements[i]), expected[i])
+
+    def test_check_type_conversion(self):
+        statements = ["v1 = (int) 1.99f;", "v1 = (int) Math.ceil(1.99f);", "v1 = (int) Math.floor(1.99f);"]
+        expected = [True, False, False]
+        for i in range(len(statements)):
+            self.assertEqual(self.cad.check_type_conversion(statements[i]), expected[i])
