@@ -21,3 +21,23 @@ class TestConfusionAtomDetector(TestCase):
         expected = [False, True, False, True]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_infix_operator_precedence(statements[i]), expected[i])
+
+    def test_check_post_inc_dec(self):
+        statements = ["var1=var1++", "var1=var2++", "var1=var2", "var1+=1", "var1+=1", "something=previous++",
+                      "var1=var2"]
+        expected = [False, True, False, False, False, True, False]
+        for i in range(len(statements)):
+            self.assertEqual(self.cad.check_post_inc_dec(statements[i]), expected[i])
+
+    def test_check_pre_inc_dec(self):
+        statements = ["var1=++var1", "var1=++var2", "var1=var2", "var1+=1", "var1+=1", "something=++previous",
+                      "var1=var2"]
+        expected = [False, True, False, False, False, True, False]
+        for i in range(len(statements)):
+            self.assertEqual(self.cad.check_pre_inc_dec(statements[i]), expected[i])
+
+    def test_check_constant_variable(self):
+        statements = ['var1=var2','var1="saaj"','var1=5']
+        expected = [True, False, False]
+        for i in range(len(statements)):
+            self.assertEqual(self.cad.check_constant_variable(statements[i]), expected[i])

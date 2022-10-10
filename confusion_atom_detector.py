@@ -28,8 +28,76 @@ class ConfusionAtomDetector:
         total_op = plus + minus + mul + div
         par = re.findall("[(]", statement)
 
-        if (len(total_op) > 1 and len(par) == 0):
-            return True
+        return True if (len(total_op) > 1 and len(par) == 0) else False
+
+    def check_post_inc_dec(self, statement):
+        statement.replace(" ", "")
+
+        x = re.split("=", statement)
+        # print(x)
+
+        lhs = x[0]
+        rhs = x[1]
+
+        print(statement)
+        if rhs[len(rhs) - 1] == "+" and rhs[len(rhs) - 2] == "+":
+            rhs = rhs.replace("++", "")
+            if rhs != lhs:
+                #print("atom")
+                return True
+            else:
+                #print("not atom")
+                return False
         else:
+            #print("not atom")
             return False
 
+    def check_pre_inc_dec(self, statement):
+        statement.replace(" ", "")
+        x = re.split("=", statement)
+        # print(x)
+
+        lhs = x[0]
+        rhs = x[1]
+
+        print(statement)
+        if rhs[0] == "+" and rhs[1] == "+":
+            rhs = rhs.replace("++", "")
+            if rhs != lhs:
+                #print("atom")
+                return True
+            else:
+                #print("not atom")
+                return False
+        else:
+            #print("not atom")
+            return False
+
+    def check_constant_variable(self, statement):
+        statement.replace(" ", "")
+        print(statement)
+
+        x = re.split("=", statement)
+        # print(x)
+
+        lhs = x[0]
+        rhs = x[1]
+
+        y = re.search("^\".*\"$", rhs)
+        # print(rhs)
+        quote_exists = False
+        is_number = False
+
+        if y:
+            quote_exists = True
+        if rhs.isdigit():
+            is_number = True
+
+        if is_number == False and quote_exists == False:
+            #print("atom")
+            return True
+        else:
+            #print("not atom")
+            return False
+
+    def 
