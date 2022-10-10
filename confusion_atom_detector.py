@@ -117,3 +117,33 @@ class ConfusionAtomDetector:
         # print(w)
         print(statement)
         return True if w else False
+
+    def check_repurposed_variable(self, statement, next_statement):
+        w = re.search("^for.*", statement)
+        # print(w)
+        if (w):
+            next_w = re.search("^for.*", next_statement)
+            # print(next_w)
+            if (next_w):
+                x = re.split(";", statement)
+                # print(x)
+                term1 = x[0]
+                term3 = x[2]
+
+                i = re.split(" ", term1)
+                # print(i[2])
+                j = re.split("=", i[2])
+                # print(j[0])
+
+                # check if j[0] matches with nextStatements 3rd term
+                next_x = re.split(";", next_statement)
+                next_term3 = next_x[2]
+                # print(next_term3)
+
+                res = ''
+                for i in range(len(next_term3) - 3):
+                    res += next_term3[i]
+
+                print(statement)
+                print(next_statement)
+                return True if res == j[0] else False

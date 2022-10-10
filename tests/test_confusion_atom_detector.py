@@ -59,3 +59,10 @@ class TestConfusionAtomDetector(TestCase):
         expected = [True, True]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_logic_as_control_flow(statements[i]), expected[i])
+
+    def test_check_repurposed_variable(self):
+        statements = ["for (int v1=0;...;v1++)", "for (int v1=0;...;v1++)"]
+        next_statements = ["for (int v2=0;...;v1++)", "for (int v2=0;...;v2++)"]
+        expected = [True, False]
+        for i in range(len(statements)):
+            self.assertEqual(self.cad.check_repurposed_variable(statements[i], next_statements[i]), expected[i])
