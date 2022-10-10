@@ -15,3 +15,9 @@ class TestConfusionAtomDetector(TestCase):
         expected = [True, True]
         for i in range(len(statements)):
             self.assertEqual(self.cad.change_of_literal_encoding(statements[i]), expected[i])
+
+    def test_check_infix_operator_precedence(self):
+        statements = ["(2/4)-(2*3)-9", "2-4/3", "2-4", "2-4/2+9"]
+        expected = [False, True, False, True]
+        for i in range(len(statements)):
+            self.assertEqual(self.cad.check_infix_operator_precedence(statements[i]), expected[i])

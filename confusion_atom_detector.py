@@ -16,3 +16,20 @@ class ConfusionAtomDetector:
         w = re.search("^0.*", rhs)
         return True if w else False
 
+    def check_infix_operator_precedence(self, statement):
+        plus = re.findall("[+]", statement)
+        minus = re.findall("[-]", statement)
+        mul = re.findall("[*]", statement)
+        div = re.findall("[/]", statement)
+
+        # exp = re.findall("["**.*"]", txt)
+        # print(len(exp))
+
+        total_op = plus + minus + mul + div
+        par = re.findall("[(]", statement)
+
+        if (len(total_op) > 1 and len(par) == 0):
+            return True
+        else:
+            return False
+
