@@ -4,6 +4,7 @@ import re
 class ConfusionAtomDetector:
     totalAtomCount = 0
     _java_variable_regex = '[a-zA-z_]+[a-zA-z0-9]*'
+
     def post_increment_decrement(self, code):
         return re.compile(rf'{self._java_variable_regex}\s*(?:\+\+|--)').findall(code)
 
@@ -43,13 +44,13 @@ class ConfusionAtomDetector:
         if rhs[len(rhs) - 1] == "+" and rhs[len(rhs) - 2] == "+":
             rhs = rhs.replace("++", "")
             if rhs != lhs:
-                #print("atom")
+                # print("atom")
                 return True
             else:
-                #print("not atom")
+                # print("not atom")
                 return False
         else:
-            #print("not atom")
+            # print("not atom")
             return False
 
     def check_pre_inc_dec(self, statement):
@@ -64,13 +65,13 @@ class ConfusionAtomDetector:
         if rhs[0] == "+" and rhs[1] == "+":
             rhs = rhs.replace("++", "")
             if rhs != lhs:
-                #print("atom")
+                # print("atom")
                 return True
             else:
-                #print("not atom")
+                # print("not atom")
                 return False
         else:
-            #print("not atom")
+            # print("not atom")
             return False
 
     def check_constant_variable(self, statement):
@@ -94,10 +95,14 @@ class ConfusionAtomDetector:
             is_number = True
 
         if is_number == False and quote_exists == False:
-            #print("atom")
+            # print("atom")
             return True
         else:
-            #print("not atom")
+            # print("not atom")
             return False
 
-    def 
+    def check_conditional_operator(self, statement):
+        print(statement)
+        # w = re.search("[a-zA-z_]+[a-zA-z0-9_]*=[a-zA-z_]+[a-zA-z0-9_]*==[0-9]*?[0-9]*:[0-9]*;", statement)
+        w = re.search(".+\?.+:.+", statement)
+        return True if w else False
