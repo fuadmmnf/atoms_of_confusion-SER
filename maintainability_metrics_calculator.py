@@ -20,7 +20,6 @@ from github.PaginatedList import PaginatedList
 from github.Repository import Repository
 from pydantic import HttpUrl
 from requests import Response
-import understand
 
 
 # from metric_generator import generate_report
@@ -176,13 +175,18 @@ class MetricsGenerator(object):
         output3 = subprocess.check_output(und_absolute_path + "  analyze -db " + str(folder_path) + ".udb",
                                           shell=True)
         # with os.add_dll_directory("C:/Program Files/SciTools/bin/pc-win64"):
-
+        # if sys.platform != 'win32':
+        #     abs_so_path = str(pathlib.Path(__file__).parent / 'lib/Understand-5.1.1029-Linux-64bit/bin/linux64/Python')
+        #     if not os.environ['PATH'].__contains__(abs_so_path):
+        #         os.environ['PATH'] = abs_so_path + os.pathsep + os.environ['PATH']
         # print(understand.version())
-        db = understand.open(str(folder_path) + ".und")
+        import understand
+
+        db = understand.open(str(folder_path) + ".udb")
         metrics = db.metric(db.metrics())
         # for k, v in sorted(metrics.items()):
         #     print(k, "=", v)
-        shutil.rmtree(str(folder_path) + ".und")
+        shutil.rmtree(str(folder_path) + ".udb")
         version_name = os.path.basename(folder_path)
         metrics["version"] = version_name
         # import json
