@@ -69,7 +69,7 @@ class GithubReleaseDownloader(object):
                 self._check_and_create_local_repo_dir(_repo_name, save_path)
                 _thread_list.append(
                     self._create_new_download_thread(url=ref,
-                                                     save_path=save_path + "\\" + _repo_name + "\\" + _version_name +
+                                                     save_path=save_path + "/" + _repo_name + "/" + _version_name +
                                                                ".zip",
                                                      chunk_size=320 // _number_of_release))
             for thread in _thread_list:
@@ -98,7 +98,7 @@ class GithubReleaseDownloader(object):
                 self._check_and_create_local_repo_dir(_repo_name, save_path)
                 _thread_list.append(
                     self._create_new_download_thread(url=ref,
-                                                     save_path=save_path + "\\" + _repo_name + "\\" + _version_name +
+                                                     save_path=save_path + "/" + _repo_name + "/" + _version_name +
                                                                ".zip",
                                                      chunk_size=320 // _number_of_release))
             for thread in _thread_list:
@@ -106,8 +106,8 @@ class GithubReleaseDownloader(object):
 
     @staticmethod
     def _check_and_create_local_repo_dir(repo_name: str, save_path: str):
-        if not os.path.exists(save_path + "\\" + repo_name):
-            os.makedirs(save_path + "\\" + repo_name)
+        if not os.path.exists(save_path + "/" + repo_name):
+            os.makedirs(save_path + "/" + repo_name)
 
     @staticmethod
     def _get_release_version(ref: str):
@@ -163,7 +163,7 @@ class MetricsGenerator(object):
 
     def unzip_multiprocess(self, file_name, save_path, zip_path):
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
-            zip_ref.extractall(save_path + "\\" + str(file_name))
+            zip_ref.extractall(save_path + "/" + str(file_name))
 
     def generate_metrics(self, folder_path, languages="Java"):
         und_absolute_path = str(pathlib.Path(__file__).parent) + '/lib/Understand-5.1.1029-Linux-64bit/bin/linux64/und'
@@ -186,7 +186,7 @@ class MetricsGenerator(object):
         metrics = db.metric(db.metrics())
         # for k, v in sorted(metrics.items()):
         #     print(k, "=", v)
-        shutil.rmtree(str(folder_path) + ".udb")
+        # shutil.rmtree(str(folder_path) + ".udb")
         version_name = os.path.basename(folder_path)
         metrics["version"] = version_name
         # import json
@@ -216,9 +216,14 @@ class MetricsGenerator(object):
 
 if __name__ == "__main__":
     # Download by Releases
-    # GithubReleaseDownloader(access_token="948292454bf5f496035bc436b15d03c183cf0fe9").).download_releases(
-    # repository="tiangolo/fastapi", save_path=r'E:\repo', thread_number=5)
-
+    test_systems_path = str(pathlib.Path(__file__).parent / 'test_systems')
+    project_repos = ['google/guava', 'mockito/mockito', 'apache/tomcat', 'apache/commons-lang', 'apache/hadoop',
+                     'elastic/elasticsearch', 'spring-projects/spring-framework', 'SeleniumHQ/selenium', 'netty/netty',
+                     'Bukkit/Bukkit', 'clojure/clojure ', 'facebook/facebook-android-sdk',
+                     'JakeWharton/ActionBarSherlock']
+    for project_repo in project_repos:
+        GithubReleaseDownloader(access_token="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").download_releases(
+            repository=project_repo, save_path=test_systems_path, thread_number=8)
     # Download by Tags
     # GithubReleaseDownloader(access_token="948292454bf5f496035bc436b15d03c183cf0fe9").download_tags(
     #     "elcodi/elcodi", thread_number=5, save_path="F:\Project_files")
@@ -228,6 +233,6 @@ if __name__ == "__main__":
     # r"F:\Project_files\aimeos-core\extracted")
 
     # # Generate Report
-    project = 'lucene'
-    MetricsGenerator(source_folder=f"test_systems/").generate_report_for_repository(
-        f"test_systems", r"Lucene.csv")
+    # project = 'lucene'
+    # MetricsGenerator(source_folder=f"test_systems/").generate_report_for_repository(
+    #     f"test_systems", r"Lucene.csv")
