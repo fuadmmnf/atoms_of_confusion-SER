@@ -215,15 +215,20 @@ class MetricsGenerator(object):
 
 
 if __name__ == "__main__":
-    # Download by Releases
     test_systems_path = str(pathlib.Path(__file__).parent / 'test_systems')
     project_repos = ['google/guava', 'mockito/mockito', 'apache/tomcat', 'apache/commons-lang', 'apache/hadoop',
                      'elastic/elasticsearch', 'spring-projects/spring-framework', 'SeleniumHQ/selenium', 'netty/netty',
                      'Bukkit/Bukkit', 'clojure/clojure ', 'facebook/facebook-android-sdk',
                      'JakeWharton/ActionBarSherlock']
+
+    # clone repos
     for project_repo in project_repos:
-        GithubReleaseDownloader(access_token="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").download_releases(
-            repository=project_repo, save_path=test_systems_path, thread_number=8)
+        # GithubReleaseDownloader(access_token="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").download_releases(
+        #     repository=project_repo, save_path=test_systems_path, thread_number=8)
+        output = subprocess.check_output(
+            "git clone https://github.com/" + project_repo + '.git ' + test_systems_path + '/' +
+            project_repo.split('/')[1],
+            shell=True)
     # Download by Tags
     # GithubReleaseDownloader(access_token="948292454bf5f496035bc436b15d03c183cf0fe9").download_tags(
     #     "elcodi/elcodi", thread_number=5, save_path="F:\Project_files")
