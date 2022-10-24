@@ -188,8 +188,8 @@ class MetricsGenerator(object):
         # for k, v in sorted(metrics.items()):
         #     print(k, "=", v)
         # shutil.rmtree(str(folder_path) + ".udb")
-        version_name = os.path.basename(folder_path)
-        metrics["version"] = version_name
+        # version_name = os.path.basename(folder_path)
+        # metrics["version"] = version_name
         # import json
 
         # with open(str(version_name)+'.json', 'w') as fp:
@@ -203,6 +203,7 @@ class MetricsGenerator(object):
                            os.path.isdir(join(folder_absolute_path, f))]
         metrics_list = defaultdict(list)
         for project_folder in project_folders:
+            print(project_folder)
             repo = git.Repo(project_folder)
 
             if 'master' in str(repo.branches):
@@ -212,18 +213,20 @@ class MetricsGenerator(object):
 
             tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
             for tag in tags:
-                # print(project_folder)
+
                 # print(repo.head.object.hexsha)
                 repo.git.checkout(tag.path)
                 # print(repo.head.object.hexsha)
                 data = self.generate_metrics(folder_path=project_folder, languages=languages)
+                data["version"] = tag.path
                 for k, v in data.items():
                     metrics_list[k].append(v)
+                print(repo.head.object.hexsha)
             # print(metrics_list)
             df = pd.DataFrame.from_dict(metrics_list)
             res_absolute_path = pathlib.Path(__file__).parent / 'res' / f"{project_folder.split('/')[-1]}.csv"
             df.to_csv(res_absolute_path, index=False)
-
+            print('\n\n')
         # data_df = pd.DataFrame.from_dict(metrics_list)
         return metrics_list
 
