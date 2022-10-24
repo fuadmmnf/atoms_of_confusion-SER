@@ -20,6 +20,7 @@ from github.PaginatedList import PaginatedList
 from github.Repository import Repository
 from pydantic import HttpUrl
 from requests import Response
+import git
 
 
 # from metric_generator import generate_report
@@ -196,19 +197,32 @@ class MetricsGenerator(object):
         # print(metrics)
         return metrics
 
-    def generate_report_for_repository(self, folder_path, report_name="out.csv", languages="Java"):
+    def generate_report_for_repositories(self, folder_path, languages="Java"):
         folder_absolute_path = pathlib.Path(__file__).parent / folder_path
-        folders = [join(folder_absolute_path, f) for f in os.listdir(folder_absolute_path) if
-                   os.path.isdir(join(folder_absolute_path, f))]
+        project_folders = [join(folder_absolute_path, f) for f in os.listdir(folder_absolute_path) if
+                           os.path.isdir(join(folder_absolute_path, f))]
         metrics_list = defaultdict(list)
-        for folder in folders:
-            data = self.generate_metrics(folder_path=folder, languages=languages)
-            for k, v in data.items():
-                metrics_list[k].append(v)
-        # print(metrics_list)
-        df = pd.DataFrame.from_dict(metrics_list)
-        res_absolute_path = pathlib.Path(__file__).parent / 'res' / report_name
-        df.to_csv(res_absolute_path, index=False)
+        for project_folder in project_folders:
+            repo = git.Repo(project_folder)
+
+            if 'master' in str(repo.branches):
+                repo.git.checkout('master')
+            elif 'main' in str(repo.branches):
+                repo.git.checkout('main')
+
+            tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
+            for tag in tags:
+                # print(project_folder)
+                # print(repo.head.object.hexsha)
+                repo.git.checkout(tag.path)
+                # print(repo.head.object.hexsha)
+                data = self.generate_metrics(folder_path=project_folder, languages=languages)
+                for k, v in data.items():
+                    metrics_list[k].append(v)
+            # print(metrics_list)
+            df = pd.DataFrame.from_dict(metrics_list)
+            res_absolute_path = pathlib.Path(__file__).parent / 'res' / f"{project_folder.split('/')[-1]}.csv"
+            df.to_csv(res_absolute_path, index=False)
 
         # data_df = pd.DataFrame.from_dict(metrics_list)
         return metrics_list
@@ -218,17 +232,13 @@ if __name__ == "__main__":
     test_systems_path = str(pathlib.Path(__file__).parent / 'test_systems')
     project_repos = ['google/guava', 'mockito/mockito', 'apache/tomcat', 'apache/commons-lang', 'apache/hadoop',
                      'elastic/elasticsearch', 'spring-projects/spring-framework', 'SeleniumHQ/selenium', 'netty/netty',
-                     'Bukkit/Bukkit', 'clojure/clojure ', 'facebook/facebook-android-sdk',
+                     'Bukkit/Bukkit', 'clojure/clojure', 'facebook/facebook-android-sdk',
                      'JakeWharton/ActionBarSherlock']
 
-    # clone repos
-    for project_repo in project_repos:
-        # GithubReleaseDownloader(access_token="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").download_releases(
-        #     repository=project_repo, save_path=test_systems_path, thread_number=8)
-        output = subprocess.check_output(
-            "git clone https://github.com/" + project_repo + '.git ' + test_systems_path + '/' +
-            project_repo.split('/')[1],
-            shell=True)
+    # for project_repo in project_repos:
+    #     GithubReleaseDownloader(access_token="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").download_releases(
+    #         repository=project_repo, save_path=test_systems_path, thread_number=8)
+
     # Download by Tags
     # GithubReleaseDownloader(access_token="948292454bf5f496035bc436b15d03c183cf0fe9").download_tags(
     #     "elcodi/elcodi", thread_number=5, save_path="F:\Project_files")
@@ -238,6 +248,6 @@ if __name__ == "__main__":
     # r"F:\Project_files\aimeos-core\extracted")
 
     # # Generate Report
-    # project = 'lucene'
-    # MetricsGenerator(source_folder=f"test_systems/").generate_report_for_repository(
-    #     f"test_systems", r"Lucene.csv")
+    for project_repo in project_repos:
+        MetricsGenerator(source_folder=f"test_systems/").generate_report_for_repositories(
+            folder_path=f"test_systems")
