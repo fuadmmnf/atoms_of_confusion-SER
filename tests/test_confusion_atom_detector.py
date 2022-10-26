@@ -31,8 +31,8 @@ class TestConfusionAtomDetector(TestCase):
 
     def test_check_pre_inc_dec(self):
         statements = ["var1=++var1", "var1=++var2", "var1=var2", "var1+=1", "var1+=1", "something=++previous",
-                      "var1=var2"]
-        expected = [False, True, False, False, False, True, False]
+                      "var1=var2", "value = ++previous_value"]
+        expected = [False, True, False, False, False, True, False, True]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_pre_inc_dec(statements[i]), expected[i])
 

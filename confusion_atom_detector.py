@@ -37,45 +37,57 @@ class ConfusionAtomDetector:
     def check_post_inc_dec(self, statement):
         statement.replace(" ", "")
 
-        x = re.split("=", statement)
-        # print(x)
+        if "=" in statement and "==" not in statement:
+            x = re.split("=", statement)
+            # print(x)
 
-        lhs = x[0]
-        rhs = x[1]
+            lhs = x[0]
+            rhs = x[1]
 
-        print(statement)
-        if rhs[len(rhs) - 1] == "+" and rhs[len(rhs) - 2] == "+":
-            rhs = rhs.replace("++", "")
-            if rhs != lhs:
-                # print("atom")
-                return True
+            print(statement)
+            if rhs[len(rhs) - 1] == "+" and rhs[len(rhs) - 2] == "+":
+                rhs = rhs.replace("++", "")
+                if rhs != lhs:
+                    # print("atom")
+                    return True
+                else:
+                    # print("not atom")
+                    return False
             else:
                 # print("not atom")
                 return False
-        else:
-            # print("not atom")
-            return False
 
     def check_pre_inc_dec(self, statement):
-        statement.replace(" ", "")
-        x = re.split("=", statement)
-        # print(x)
+        #statement.replace(" ", "")
+        #statement = (re.sub(r"\s+", "", statement), sep = '')
 
-        lhs = x[0]
-        rhs = x[1]
+        #statement = statement.rstrip("w.")
+        if "=" in statement and "==" not in statement:
+            x = re.split("=", statement)
+            # print(x)
 
-        print(statement)
-        if rhs[0] == "+" and rhs[1] == "+":
-            rhs = rhs.replace("++", "")
-            if rhs != lhs:
-                # print("atom")
-                return True
+            lhs = x[0]
+            rhs = x[1]
+
+            lhs = lhs.strip()
+            print(lhs)
+
+            rhs = rhs.strip()
+            print(rhs)
+
+            print(statement)
+            if rhs[0] == "+" and rhs[1] == "+":
+                rhs = rhs.replace("++", "")
+                if rhs != lhs:
+                    print(rhs + lhs)
+                    # print("atom")
+                    return True
+                else:
+                    # print("not atom")
+                    return False
             else:
                 # print("not atom")
                 return False
-        else:
-            # print("not atom")
-            return False
 
     def check_constant_variable(self, statement):
         statement.replace(" ", "")
@@ -189,9 +201,56 @@ class ConfusionAtomDetector:
         Lines = file1.readlines()
 
         count = 0
+        line_list = []
         # Strips the newline character
         for line in Lines:
             count += 1
             line = line.strip()
-            print("Line{}: {}".format(count, line))
+            #print("Line{}: {}".format(count, line))
+            line_list.append(line)
 
+        return line_list
+
+    def count_atoms(self, line_list, atom_dict):
+        # type_conversion
+        atom_type_conversion_count = 0
+        atom_post_inc_dec_count = 0
+        atom_pre_inc_dec_count = 0
+
+        for line in line_list:
+            if self.check_type_conversion(line):
+                atom_type_conversion_count += 1
+                print(atom_type_conversion_count)
+                print("Atom")
+            else:
+                print("Not atom")
+
+            if self.check_post_inc_dec(line):
+                print(line)
+                atom_post_inc_dec_count += 1
+                print(atom_post_inc_dec_count)
+                print("Atom")
+            else:
+                print("Not atom")
+
+            if self.check_pre_inc_dec(line):
+                atom_pre_inc_dec_count += 1
+                print(atom_pre_inc_dec_count)
+                print("Atom")
+            else:
+                print("Not atom")
+
+
+        #print("Total type conversion atoms:")
+        #print(atom_type_conversion_count)
+
+        #dead_repeated and repurposed need two consecutive statements
+        atom_dict["type_conversion"] = atom_type_conversion_count
+        atom_dict["post_inc_dec"] = atom_post_inc_dec_count
+        atom_dict["pre_inc_dec"] = atom_pre_inc_dec_count
+        #atom_dict["post_inc_dec"] = atom_post_inc_dec_count
+        #atom_dict["post_inc_dec"] = atom_post_inc_dec_count
+        #atom_dict["post_inc_dec"] = atom_post_inc_dec_count
+        #atom_dict["post_inc_dec"] = atom_post_inc_dec_count
+
+        return atom_dict
