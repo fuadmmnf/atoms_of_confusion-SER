@@ -216,6 +216,10 @@ class ConfusionAtomDetector:
         atom_type_conversion_count = 0
         atom_post_inc_dec_count = 0
         atom_pre_inc_dec_count = 0
+        atom_constant_variable_count = 0
+        atom_conditional_operator_count = 0
+        atom_arithmetic_as_logic_count = 0
+        atom_logic_as_control_flow_count = 0
 
         for line in line_list:
             if self.check_type_conversion(line):
@@ -248,9 +252,9 @@ class ConfusionAtomDetector:
         atom_dict["type_conversion"] = atom_type_conversion_count
         atom_dict["post_inc_dec"] = atom_post_inc_dec_count
         atom_dict["pre_inc_dec"] = atom_pre_inc_dec_count
-        #atom_dict["post_inc_dec"] = atom_post_inc_dec_count
-        #atom_dict["post_inc_dec"] = atom_post_inc_dec_count
-        #atom_dict["post_inc_dec"] = atom_post_inc_dec_count
-        #atom_dict["post_inc_dec"] = atom_post_inc_dec_count
+        atom_dict["constant_variable"] = atom_constant_variable_count
+        atom_dict["conditional_operator"] = atom_conditional_operator_count
+        atom_dict["arithmetic_as_logic"] = atom_arithmetic_as_logic_count
+        atom_dict["logic_as_control_flow"] = atom_logic_as_control_flow_count
 
         return atom_dict
