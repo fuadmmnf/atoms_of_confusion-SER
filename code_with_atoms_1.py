@@ -1,9 +1,12 @@
+#issue in 4 types of atom detection
+#additional 3 not done yet
+
 #code with atoms
 previous_value = 1
 
 a = 1
 b = 10
-#infix_operator_precedence
+#infix_operator_precedence - 6
 value = a - b / 2
 
 #post_inc_dec
@@ -14,7 +17,8 @@ value_new = previous_value_new++
 value = ++previous_value
 
 var2 = 22
-#constant_variable
+
+#constant_variable - 30
 new_value = value
 var1=var2
 var3="saaj"
@@ -22,6 +26,7 @@ var3="saaj"
 value = 33
 v = 35
 v1 = 8
+
 #conditional_operator
 new_value = value == 3 ? 2 : 1
 v1 == 3? 2 : 1 + v == 5
@@ -31,7 +36,7 @@ if v1==3 {v2=2} else {v2=1}
 (new_value-3)*(value-4)!=0
 v1!=3 && v2!=4
 
-#logic_as_control_flow
+#logic_as_control_flow 64
 new_value == ++new_value > 0 || ++value > 0
 v2 == --v1 < 9 && v2++ = 0;
 
@@ -58,5 +63,8 @@ if (v1) {f1()}; f2();
 v1 = (int) 1.99f;
 v1 = (int) Math.ceil(1.99f);
 v1 = (int) Math.floor(1.99f);
+
+#cole - 6
+v1 = 013
 
 
