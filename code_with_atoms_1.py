@@ -1,4 +1,6 @@
+#6 done perfectly
 #issue in 4 types of atom detection
+#remaining 2 need consecutive two statements need touch up
 #additional 3 not done yet
 
 #code with atoms
@@ -41,13 +43,17 @@ new_value == ++new_value > 0 || ++value > 0
 v2 == --v1 < 9 && v2++ = 0;
 
 #repurposed_variable
-for (int i=0; i<22; i++)
-    for (int j=0; j<8; j++)
+#; er pore space thakleo kaj kore na lol
+for (int i=0;i<22;i++)
+for (int j=0;j<8;i++)
         print("repurposed variable")
         
 for (int v1=0; v1<99; v1++)
     for (int v2=0; v2<6; v2++)
         print("repurposed variable")
+
+for (int v1=0;...;v1++)
+for (int v2=0;...;v1++)
 
 #dead_repeated
 v1 = 1 
@@ -65,6 +71,7 @@ v1 = (int) Math.ceil(1.99f);
 v1 = (int) Math.floor(1.99f);
 
 #cole - 6
+#comment ar newline omit kora lagbe naile jegulay 2 line kore pore shegulay comment and newline keo nextline bhabtese
 v1 = 013
 
 

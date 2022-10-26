@@ -177,15 +177,17 @@ class ConfusionAtomDetector:
             rhs = x[1]
 
             next_statement.replace(" ", "")
-            y = re.split("=", next_statement)
 
-            next_lhs = y[0]
-            next_rhs = y[1]
+            if "=" in next_statement:
+                y = re.split("=", next_statement)
 
-            print(statement)
-            print(next_statement)
-            #return True if (lhs == next_lhs and '+' not in next_rhs and '-' not in next_rhs) else False
-            return True if lhs == next_lhs else False
+                next_lhs = y[0]
+                next_rhs = y[1]
+
+                print(statement)
+                print(next_statement)
+                #return True if (lhs == next_lhs and '+' not in next_rhs and '-' not in next_rhs) else False
+                return True if lhs == next_lhs else False
 
     def check_omitted_curly_braces(self, statement):
         w = re.search("^if.*", statement)
@@ -282,21 +284,6 @@ class ConfusionAtomDetector:
             else:
                 print("Not atom")
 
-            """if self.check_repurposed_variable(line):
-                atom_repurposed_variable_count += 1
-                print(atom_repurposed_variable_count)
-                print("Atom")
-            else:
-                print("Not atom")
-
-            if self.check_dead_repeated(line):
-                atom_dead_repeated_count += 1
-                print(atom_dead_repeated_count)
-                print("Atom")
-            else:
-                print("Not atom")
-
-"""
             if self.check_omitted_curly_braces(line):
                 atom_omitted_curly_braces_count += 1
                 print(atom_omitted_curly_braces_count)
@@ -318,6 +305,21 @@ class ConfusionAtomDetector:
             else:
                 print("Not atom")
 
+        for i in range (len(line_list)-1):
+            if self.check_repurposed_variable(line_list[i], line_list[i+1]):
+                atom_repurposed_variable_count += 1
+                print(atom_repurposed_variable_count)
+                print("Atom")
+            else:
+                print("Not atom")
+
+            if self.check_dead_repeated(line_list[i], line_list[i+1]):
+                atom_dead_repeated_count += 1
+                print(atom_dead_repeated_count)
+                print("Atom")
+            else:
+                print("Not atom")
+
 
         #print("Total type conversion atoms:")
         #print(atom_type_conversion_count)
@@ -330,8 +332,8 @@ class ConfusionAtomDetector:
         atom_dict["conditional_operator"] = atom_conditional_operator_count
         atom_dict["arithmetic_as_logic"] = atom_arithmetic_as_logic_count
         atom_dict["logic_as_control_flow"] = atom_logic_as_control_flow_count
-        #atom_dict["repurposed_variable"] = atom_repurposed_variable_count
-        #atom_dict["dead_repeated"] = atom_dead_repeated_count
+        atom_dict["repurposed_variable"] = atom_repurposed_variable_count
+        atom_dict["dead_repeated"] = atom_dead_repeated_count
         atom_dict["omitted_curly_braces"] = atom_omitted_curly_braces_count
         atom_dict["change_of_literal_encoding"] = atom_change_of_literal_encoding_count
         atom_dict["infix_operator_precedence"] = atom_infix_operator_precedence_count
