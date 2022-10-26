@@ -68,9 +68,9 @@ class TestConfusionAtomDetector(TestCase):
             self.assertEqual(self.cad.check_repurposed_variable(statements[i], next_statements[i]), expected[i])
 
     def test_check_dead_repeated(self):
-        statements = ["v1 = 1;", "v1 =1"]
-        next_statements = ["v1 = 2;", "v1 +=1"]
-        expected = [True, False]
+        statements = ["v1 = 1;", "v1 =1", "v1=1"]
+        next_statements = ["v1 = 2;", "v1 +=1", "v1=++v1"]
+        expected = [True, False, True]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_dead_repeated(statements[i], next_statements[i]), expected[i])
 

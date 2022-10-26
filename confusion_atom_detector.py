@@ -120,6 +120,7 @@ class ConfusionAtomDetector:
 
     def check_repurposed_variable(self, statement, next_statement):
         w = re.search("^for.*", statement)
+        next_statement = next_statement.strip()
         # print(w)
         if (w):
             next_w = re.search("^for.*", next_statement)
@@ -163,6 +164,7 @@ class ConfusionAtomDetector:
 
         print(statement)
         print(next_statement)
+        #return True if (lhs == next_lhs and '+' not in next_rhs and '-' not in next_rhs) else False
         return True if lhs == next_lhs else False
 
     def check_omitted_curly_braces(self, statement):
