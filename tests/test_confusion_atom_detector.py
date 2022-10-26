@@ -85,3 +85,8 @@ class TestConfusionAtomDetector(TestCase):
         expected = [True, False, False]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_type_conversion(statements[i]), expected[i])
+
+    #def test_read_file_and_write_csv(self):
+    #    #files = ['']
+    #    for i in range(1):
+    #        self.assertEqual(self.cad.read_file_and_write_csv())

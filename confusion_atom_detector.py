@@ -5,6 +5,9 @@ class ConfusionAtomDetector:
     totalAtomCount = 0
     _java_variable_regex = '[a-zA-z_]+[a-zA-z0-9]*'
 
+    def __init__(self, file):
+        self.file = file
+
     #def post_increment_decrement(self, code):
     #    return re.compile(rf'{self._java_variable_regex}\s*(?:\+\+|--)').findall(code)
 
@@ -176,3 +179,19 @@ class ConfusionAtomDetector:
         print(statement)
         if ('(int)' or '(double)' or '(float)' or ('str')) in statement:
             return False if ("Math.ceil" in statement) or ("Math.floor" in statement) else True
+
+    def read_file_and_write_csv(self, file):
+        # Python code to
+        # demonstrate readlines()
+
+        # Using readlines()
+        file1 = open(file, 'r')
+        Lines = file1.readlines()
+
+        count = 0
+        # Strips the newline character
+        for line in Lines:
+            count += 1
+            line = line.strip()
+            print("Line{}: {}".format(count, line))
+
