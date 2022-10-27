@@ -175,12 +175,10 @@ class MetricsGenerator(object):
             und_absolute_path + "  add -db " + str(folder_path) + ".udb " + str(folder_path), shell=True)
         output3 = subprocess.check_output(und_absolute_path + "  analyze -db " + str(folder_path) + ".udb",
                                           shell=True)
-        # with os.add_dll_directory("C:/Program Files/SciTools/bin/pc-win64"):
-        # if sys.platform != 'win32':
-        #     abs_so_path = str(pathlib.Path(__file__).parent / 'lib/Understand-5.1.1029-Linux-64bit/bin/linux64/Python')
-        #     if not os.environ['PATH'].__contains__(abs_so_path):
-        #         os.environ['PATH'] = abs_so_path + os.pathsep + os.environ['PATH']
-        # print(understand.version())
+        # with os.add_dll_directory("C:/Program Files/SciTools/bin/pc-win64"): if sys.platform != 'win32':
+        # abs_so_path = str(pathlib.Path(__file__).parent / 'lib/Understand-5.1.1029-Linux-64bit/bin/linux64/Python')
+        # if not os.environ['PATH'].__contains__(abs_so_path): os.environ['PATH'] = abs_so_path + os.pathsep +
+        # os.environ['PATH'] print(understand.version())
         import understand
 
         db = understand.open(str(folder_path) + ".udb")
@@ -201,42 +199,50 @@ class MetricsGenerator(object):
         folder_absolute_path = pathlib.Path(__file__).parent / folder_path
         project_folders = [join(folder_absolute_path, f) for f in os.listdir(folder_absolute_path) if
                            os.path.isdir(join(folder_absolute_path, f))]
-        metrics_list = defaultdict(list)
         for project_folder in project_folders:
+            metrics_list = defaultdict(list)
             print(project_folder)
+            # if project_folder.split('/')[-1] in ['ActionBarSherlock', 'Bukkit', 'clojure', 'commons-lang',
+            #                                      'elasticsearch', 'hadoop']:
+            #     continue
+
             repo = git.Repo(project_folder)
 
             if 'master' in str(repo.branches):
                 repo.git.checkout('master')
+            elif 'trunk' in str(repo.branches):
+                repo.git.checkout('trunk')
             elif 'main' in str(repo.branches):
                 repo.git.checkout('main')
 
             tags = sorted(repo.tags, key=lambda t: t.commit.committed_datetime)
-            for tag in tags:
+
+            for i in range(len(tags)):
 
                 # print(repo.head.object.hexsha)
-                repo.git.checkout(tag.path)
+                repo.git.checkout(tags[i].path)
                 # print(repo.head.object.hexsha)
+                print(f"{i + 1}/{len(tags)}: {repo.head.object.hexsha}")
                 data = self.generate_metrics(folder_path=project_folder, languages=languages)
-                data["version"] = tag.path
+                data["version"] = tags[i].path
+                data["commit_time"] = tags[i].commit.committed_datetime
                 for k, v in data.items():
                     metrics_list[k].append(v)
-                print(repo.head.object.hexsha)
+
             # print(metrics_list)
             df = pd.DataFrame.from_dict(metrics_list)
             res_absolute_path = pathlib.Path(__file__).parent / 'res' / f"{project_folder.split('/')[-1]}.csv"
             df.to_csv(res_absolute_path, index=False)
             print('\n\n')
         # data_df = pd.DataFrame.from_dict(metrics_list)
-        return metrics_list
 
 
 if __name__ == "__main__":
     test_systems_path = str(pathlib.Path(__file__).parent / 'test_systems')
-    project_repos = ['google/guava', 'mockito/mockito', 'apache/tomcat', 'apache/commons-lang', 'apache/hadoop',
-                     'elastic/elasticsearch', 'spring-projects/spring-framework', 'SeleniumHQ/selenium', 'netty/netty',
-                     'Bukkit/Bukkit', 'clojure/clojure', 'facebook/facebook-android-sdk',
-                     'JakeWharton/ActionBarSherlock']
+    # project_repos = ['google/guava', 'mockito/mockito', 'apache/tomcat', 'apache/commons-lang', 'apache/hadoop',
+    #                  'elastic/elasticsearch', 'spring-projects/spring-framework', 'SeleniumHQ/selenium', 'netty/netty',
+    #                  'Bukkit/Bukkit', 'clojure/clojure', 'facebook/facebook-android-sdk',
+    #                  'JakeWharton/ActionBarSherlock']
 
     # for project_repo in project_repos:
     #     GithubReleaseDownloader(access_token="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").download_releases(
@@ -251,6 +257,6 @@ if __name__ == "__main__":
     # r"F:\Project_files\aimeos-core\extracted")
 
     # # Generate Report
-    for project_repo in project_repos:
-        MetricsGenerator(source_folder=f"test_systems/").generate_report_for_repositories(
-            folder_path=f"test_systems")
+
+    MetricsGenerator(source_folder=f"test_systems/").generate_report_for_repositories(
+        folder_path=f"test_systems")
