@@ -1,5 +1,4 @@
-#8 done perfectly
-#issue in 2 types of atom detection
+#10 done perfectly
 #remaining 2 need consecutive two statements need touch up
 #additional 3 not done yet
 
@@ -71,8 +70,7 @@ v1 = (int) 1.99f;
 v1 = (int) Math.ceil(1.99f);
 v1 = (int) Math.floor(1.99f);
 
-#cole - 6
-#comment ar newline omit kora lagbe naile jegulay 2 line kore pore shegulay comment and newline keo nextline bhabtese
+#cole
 v1 = 013
 
 

@@ -13,13 +13,14 @@ class ConfusionAtomDetector:
 
     def check_change_of_literal_encoding(self, statement):
         statement.replace(' ', '')
-        if "=" in statement:
-            x = re.split("=", statement)
-            lhs = x[0]
-            rhs = x[1]
-            rhs = rhs.strip()
-            w = re.search("^0.*", rhs)
-            return True if w else False
+        if ("while" not in statement) and ("for" not in statement) and ("if" not in statement):
+            if "=" in statement:
+                x = re.split("=", statement)
+                lhs = x[0]
+                rhs = x[1]
+                rhs = rhs.strip()
+                w = re.search("^0.*", rhs)
+                return True if (w and len(rhs)>1) else False
 
     def check_infix_operator_precedence(self, statement):
         plus = re.findall("[+]", statement)
