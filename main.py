@@ -7,8 +7,6 @@ if __name__ == '__main__':
 
     line_list = obj_cad.read_file_and_write_csv(filepath)
 
-    atom_dict = {}
-    obj_cad.count_atoms(line_list, atom_dict)
-    print("\n")
-    print(atom_dict)
-    print("\n")
+    end = obj_cad.count_atoms(line_list)
+    #print(end)
+   

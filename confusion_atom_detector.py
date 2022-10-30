@@ -104,16 +104,24 @@ class ConfusionAtomDetector:
 
             if y:
                 quote_exists = True
+            
+            rhs = rhs.strip()
             if rhs.isdigit():
                 is_number = True
+            if rhs.isdigit() == False:
+                print("**********************")
+                print(rhs)
 
-            if is_number == False and quote_exists == False:
-                w = re.search("[a-zA-z_]+[a-zA-z0-9]*", statement)
+            if is_number == False:
+                if quote_exists:
+                    return False
+                #w = re.search("[a-zA-z_]+[a-zA-z0-9]*", statement)
                 # print("atom")
-                return True if w else False
-            else:
-                # print("not atom")
-                return False
+                #return True if w else False
+                if quote_exists == False and ('+' not in rhs) and ('-' not in rhs) and ('*' not in rhs) and ('/' not in rhs) and ('(' not in rhs) and ('[' not in rhs) and ('pow' not in rhs) and ('?' not in rhs) and ('!' not in rhs) and (':' not in rhs) and ('<' not in rhs) and ('>' not in rhs) and ('&' not in rhs) and ('|' not in rhs) and ('%' not in rhs):
+                    return True
+                else:
+                    return False
 
     def check_conditional_operator(self, statement):
         print(statement)
@@ -220,7 +228,10 @@ class ConfusionAtomDetector:
 
         return line_list
 
-    def count_atoms(self, line_list, atom_dict):
+    def count_atoms(self, line_list):
+
+        atom_dict = {}
+        tracker_dict = {}
         # type_conversion
         atom_type_conversion_count = 0
         atom_post_inc_dec_count = 0
@@ -235,11 +246,24 @@ class ConfusionAtomDetector:
         atom_change_of_literal_encoding_count = 0
         atom_infix_operator_precedence_count = 0
 
+        check_type_conversion = []
+        check_post_inc_dec = []
+        check_pre_inc_dec = []
+        check_constant_variable = []
+        check_conditional_operator = []
+        check_arithmetic_as_logic = []
+        check_logic_as_control_flow = []
+        check_omitted_curly_braces = []
+        check_change_of_literal_encoding = []
+        check_infix_operator_precedence = []
+
+
         for line in line_list:
             if self.check_type_conversion(line):
                 atom_type_conversion_count += 1
                 print(atom_type_conversion_count)
                 print("Atom")
+                check_type_conversion.append(line)
             else:
                 print("Not atom")
 
@@ -248,6 +272,7 @@ class ConfusionAtomDetector:
                 atom_post_inc_dec_count += 1
                 print(atom_post_inc_dec_count)
                 print("Atom")
+                check_post_inc_dec.append(line)
             else:
                 print("Not atom")
 
@@ -255,6 +280,7 @@ class ConfusionAtomDetector:
                 atom_pre_inc_dec_count += 1
                 print(atom_pre_inc_dec_count)
                 print("Atom")
+                check_pre_inc_dec.append(line)
             else:
                 print("Not atom")
 
@@ -262,6 +288,7 @@ class ConfusionAtomDetector:
                 atom_constant_variable_count += 1
                 print(atom_constant_variable_count)
                 print("Atom")
+                check_constant_variable.append(line)
             else:
                 print("Not atom")
 
@@ -269,6 +296,7 @@ class ConfusionAtomDetector:
                 atom_conditional_operator_count += 1
                 print(atom_conditional_operator_count)
                 print("Atom")
+                check_conditional_operator.append(line)
             else:
                 print("Not atom")
 
@@ -276,6 +304,7 @@ class ConfusionAtomDetector:
                 atom_arithmetic_as_logic_count += 1
                 print(atom_arithmetic_as_logic_count)
                 print("Atom")
+                check_arithmetic_as_logic.append(line)
             else:
                 print("Not atom")
 
@@ -283,6 +312,7 @@ class ConfusionAtomDetector:
                 atom_logic_as_control_flow_count += 1
                 print(atom_logic_as_control_flow_count)
                 print("Atom")
+                check_logic_as_control_flow.append(line)
             else:
                 print("Not atom")
 
@@ -290,6 +320,7 @@ class ConfusionAtomDetector:
                 atom_omitted_curly_braces_count += 1
                 print(atom_omitted_curly_braces_count)
                 print("Atom")
+                check_omitted_curly_braces.append(line)
             else:
                 print("Not atom")
 
@@ -297,6 +328,7 @@ class ConfusionAtomDetector:
                 atom_change_of_literal_encoding_count += 1
                 print(atom_change_of_literal_encoding_count)
                 print("Atom")
+                check_change_of_literal_encoding.append(line)
             else:
                 print("Not atom")
 
@@ -304,14 +336,19 @@ class ConfusionAtomDetector:
                 atom_infix_operator_precedence_count += 1
                 print(atom_infix_operator_precedence_count)
                 print("Atom")
+                check_infix_operator_precedence.append(line)
             else:
                 print("Not atom")
+
+        check_repurposed_variable = []
+        check_dead_repeated = []
 
         for i in range (len(line_list)-1):
             if self.check_repurposed_variable(line_list[i], line_list[i+1]):
                 atom_repurposed_variable_count += 1
                 print(atom_repurposed_variable_count)
                 print("Atom")
+                check_repurposed_variable.append(line)
             else:
                 print("Not atom")
 
@@ -319,6 +356,7 @@ class ConfusionAtomDetector:
                 atom_dead_repeated_count += 1
                 print(atom_dead_repeated_count)
                 print("Atom")
+                check_dead_repeated.append(line)
             else:
                 print("Not atom")
 
@@ -340,6 +378,30 @@ class ConfusionAtomDetector:
         atom_dict["change_of_literal_encoding"] = atom_change_of_literal_encoding_count
         atom_dict["infix_operator_precedence"] = atom_infix_operator_precedence_count
 
+        tracker_dict["type_conversion"] = check_type_conversion
+        tracker_dict["post_inc_dec"] = check_post_inc_dec
+        tracker_dict["pre_inc_dec"] = check_pre_inc_dec
+        tracker_dict["constant_variable"] = check_constant_variable
+        tracker_dict["conditional_operator"] = check_conditional_operator
+        tracker_dict["arithmetic_as_logic"] = check_arithmetic_as_logic
+        tracker_dict["logic_as_control_flow"] = check_logic_as_control_flow
+        tracker_dict["repurposed_variable"] = check_repurposed_variable
+        tracker_dict["dead_repeated"] = check_dead_repeated
+        tracker_dict["omitted_curly_braces"] = check_omitted_curly_braces
+        tracker_dict["change_of_literal_encoding"] = check_change_of_literal_encoding
+        tracker_dict["infix_operator_precedence"] = check_infix_operator_precedence
 
+        print("\n")
+        print(atom_dict)
+        print('\n')
+        
+        for key in tracker_dict:
+            print("atom type: ", key)
+            vc = 0
+            for value in tracker_dict[key]:
+                vc = vc + 1
+                print("Statement {}: {}".format(vc, value))
+            print('\n')
+        print("\n")
 
-        return atom_dict
+        return "end"

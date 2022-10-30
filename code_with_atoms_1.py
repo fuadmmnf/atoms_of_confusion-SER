@@ -20,7 +20,7 @@ value = ++previous_value
 
 var2 = 22
 
-#constant_variable - 30
+#constant_variable - 18
 new_value = value
 var1=var2
 var3="saaj"
