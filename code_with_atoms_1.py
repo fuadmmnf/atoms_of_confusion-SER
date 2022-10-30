@@ -1,6 +1,5 @@
-#12 done perfectly
-#additional 2 not done yet - need AST
-#Remove indentation - indentation - AST charai kora jabe InshaAllah - strip() diye len before and after
+#14 done perfectly
+#Remove indentation - indentation - AST chara - strip() diye len before and after
 
 #code with atoms
 previous_value = 1
