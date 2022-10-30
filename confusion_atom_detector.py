@@ -71,16 +71,12 @@ class ConfusionAtomDetector:
             rhs = x[1]
 
             lhs = lhs.strip()
-            print(lhs)
-
             rhs = rhs.strip()
-            print(rhs)
 
-            print(statement)
             if rhs[0] == "+" and rhs[1] == "+":
                 rhs = rhs.replace("++", "")
                 if rhs != lhs:
-                    print(rhs + lhs)
+                    #print(rhs + lhs)
                     # print("atom")
                     return True
                 else:
@@ -138,7 +134,10 @@ class ConfusionAtomDetector:
 
     def check_repurposed_variable(self, statement, next_statement):
         w = re.search("^for.*", statement)
+        print(next_statement)
         next_statement = next_statement.strip()
+        print(next_statement)
+
         # print(w)
         if (w):
             next_w = re.search("^for.*", next_statement)
@@ -184,18 +183,18 @@ class ConfusionAtomDetector:
                 next_lhs = y[0]
                 next_rhs = y[1]
 
-                print(statement)
-                print(next_statement)
+                #print(statement)
+                #print(next_statement)
                 #return True if (lhs == next_lhs and '+' not in next_rhs and '-' not in next_rhs) else False
                 return True if lhs == next_lhs else False
 
     def check_omitted_curly_braces(self, statement):
         w = re.search("^if.*", statement)
-        print(statement)
+        #print(statement)
         return True if w and ('{' not in statement) else False
 
     def check_type_conversion(self, statement):
-        print(statement)
+        #print(statement)
         if ('(int)' or '(double)' or '(float)' or ('str')) in statement:
             return False if ("Math.ceil" in statement) or ("Math.floor" in statement) else True
 
@@ -214,7 +213,10 @@ class ConfusionAtomDetector:
             count += 1
             line = line.strip()
             #print("Line{}: {}".format(count, line))
-            line_list.append(line)
+            if len(line)!=0:
+            #print(line[0])
+                if (line[0]!='#'):
+                    line_list.append(line)
 
         return line_list
 

@@ -9,4 +9,6 @@ if __name__ == '__main__':
 
     atom_dict = {}
     obj_cad.count_atoms(line_list, atom_dict)
+    print("\n")
     print(atom_dict)
+    print("\n")
