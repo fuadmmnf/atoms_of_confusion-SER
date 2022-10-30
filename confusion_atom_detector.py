@@ -46,7 +46,7 @@ class ConfusionAtomDetector:
             lhs = x[0]
             rhs = x[1]
 
-            print(statement)
+            #print(statement)
             if rhs[len(rhs) - 1] == "+" and rhs[len(rhs) - 2] == "+":
                 rhs = rhs.replace("++", "")
                 if rhs != lhs:
@@ -89,7 +89,7 @@ class ConfusionAtomDetector:
 
     def check_constant_variable(self, statement):
         statement.replace(" ", "")
-        print(statement)
+        #print(statement)
 
         if "=" in statement:
             if ('+' not in statement) and ('-' not in statement) and ('*' not in statement) and ('/' not in statement) and ('(' not in statement) and ('[' not in statement) and ('pow' not in statement) and ('?' not in statement) and ('!' not in statement) and (':' not in statement) and ('<' not in statement) and ('>' not in statement) and ('&' not in statement) and ('|' not in statement) and ('%' not in statement) and ('{' not in statement):
@@ -100,14 +100,14 @@ class ConfusionAtomDetector:
                 rhs = x[1]
 
                 y = re.search("^\".*\"$", rhs)
-                # print(rhs)
                 quote_exists = False
                 is_number = False
 
-                if y:
+                if y or "\"" in rhs:
                     quote_exists = True
                 
                 rhs = rhs.strip()
+                #print(rhs)
                 if rhs.isdigit():
                     is_number = True
 
@@ -124,7 +124,7 @@ class ConfusionAtomDetector:
         return False   
 
     def check_conditional_operator(self, statement):
-        print(statement)
+        #print(statement)
         # w = re.search("[a-zA-z_]+[a-zA-z0-9_]*=[a-zA-z_]+[a-zA-z0-9_]*==[0-9]*?[0-9]*:[0-9]*;", statement)
         w = re.search(".+\?.+:.+", statement)
         return True if w else False
@@ -137,14 +137,13 @@ class ConfusionAtomDetector:
         arithmetic_operators = "(\+\+|--|\+=|-=|\*=|/=|%=)"
         w = re.search(f".*{arithmetic_operators}.*(\|\||&&).*{arithmetic_operators}.*", statement)
         # print(w)
-        print(statement)
+        #print(statement)
         return True if w else False
 
     def check_repurposed_variable(self, statement, next_statement):
         w = re.search("^for.*", statement)
-        print(next_statement)
+        
         next_statement = next_statement.strip()
-        print(next_statement)
 
         # print(w)
         if (w):
@@ -154,25 +153,25 @@ class ConfusionAtomDetector:
                 x = re.split(";", statement)
                 # print(x)
                 term1 = x[0]
-                term3 = x[2]
+                term3 = x[2].strip()
+
+                print("R---------------------------------------------------------------------R")
 
                 i = re.split(" ", term1)
                 # print(i[2])
                 j = re.split("=", i[2])
-                # print(j[0])
 
                 # check if j[0] matches with nextStatements 3rd term
                 next_x = re.split(";", next_statement)
-                next_term3 = next_x[2]
-                # print(next_term3)
+                next_term3 = next_x[2].strip()
 
                 res = ''
                 for i in range(len(next_term3) - 3):
                     res += next_term3[i]
+                
+                #print(res)
 
-                print(statement)
-                print(next_statement)
-                return True if res == j[0] else False
+                return True if res == j[0].strip() else False
 
     def check_dead_repeated(self, statement, next_statement):
         statement.replace(" ", "")
@@ -206,6 +205,24 @@ class ConfusionAtomDetector:
         if ('(int)' or '(double)' or '(float)' or ('str')) in statement:
             return False if ("Math.ceil" in statement) or ("Math.floor" in statement) else True
 
+    def check_remove_indentation(self, statement, next_statement, next_next_statement):
+        if ('while' in statement or 'if' in statement) and '{' not in statement:
+            if next_next_statement[0]==" ":
+                print(next_next_statement)
+                return True
+        return False
+
+    def check_indentation(self, statement, next_statement):
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        print(statement)
+        if ('while' in statement) or ('if' in statement) or ('for' in statement):
+            if '{' in statement:
+                if next_statement[0]==" ":
+                    print(statement)
+                    print(next_statement)
+                    return True
+        return False
+
     def read_file_and_write_csv(self, file):
         # Python code to
         # demonstrate readlines()
@@ -213,6 +230,7 @@ class ConfusionAtomDetector:
         # Using readlines()
         file1 = open(file, 'r')
         Lines = file1.readlines()
+        file1.close()
 
         count = 0
         line_list = []
@@ -228,10 +246,36 @@ class ConfusionAtomDetector:
 
         return line_list
 
+    def read_file_and_write_csv_for_indentation(self, file):
+        # Python code to
+        # demonstrate readlines()
+
+        # Using readlines()
+        file1 = open(file, 'r')
+        Lines = file1.readlines()
+        file1.close()
+
+        count = 0
+        line_list = []
+        # Strips the newline character
+        for line in Lines:
+            count += 1
+            #line = line.strip()
+            #print("Line{}: {}".format(count, line))
+            if len(line)!=0:
+            #print(line[0])
+                if (line[0]!='#'):
+                    line_list.append(line)
+
+        return line_list
+
+    global atom_dict 
+    atom_dict = {}
+    global tracker_dict 
+    tracker_dict = {}
+
     def count_atoms(self, line_list):
 
-        atom_dict = {}
-        tracker_dict = {}
         # type_conversion
         atom_type_conversion_count = 0
         atom_post_inc_dec_count = 0
@@ -257,88 +301,69 @@ class ConfusionAtomDetector:
         check_change_of_literal_encoding = []
         check_infix_operator_precedence = []
 
-
         for line in line_list:
             if self.check_type_conversion(line):
                 atom_type_conversion_count += 1
-                print(atom_type_conversion_count)
-                print("Atom")
+                #print(atom_type_conversion_count)
+                #print("Atom")
                 check_type_conversion.append(line)
-            else:
-                print("Not atom")
+            #else:
+                #print("Not atom")
 
             if self.check_post_inc_dec(line):
-                print(line)
+                #print(line)
                 atom_post_inc_dec_count += 1
-                print(atom_post_inc_dec_count)
-                print("Atom")
+                #print(atom_post_inc_dec_count)
+                #print("Atom")
                 check_post_inc_dec.append(line)
-            else:
-                print("Not atom")
-
+           
             if self.check_pre_inc_dec(line):
                 atom_pre_inc_dec_count += 1
-                print(atom_pre_inc_dec_count)
-                print("Atom")
+                #print(atom_pre_inc_dec_count)
+                #print("Atom")
                 check_pre_inc_dec.append(line)
-            else:
-                print("Not atom")
 
             if self.check_constant_variable(line):
                 atom_constant_variable_count += 1
-                print(atom_constant_variable_count)
-                print("Atom")
+                #print(atom_constant_variable_count)
+                #print("Atom")
                 check_constant_variable.append(line)
-            else:
-                print("Not atom")
 
             if self.check_conditional_operator(line):
                 atom_conditional_operator_count += 1
-                print(atom_conditional_operator_count)
-                print("Atom")
+                #print(atom_conditional_operator_count)
+                #print("Atom")
                 check_conditional_operator.append(line)
-            else:
-                print("Not atom")
 
             if self.check_arithmetic_as_logic(line):
                 atom_arithmetic_as_logic_count += 1
-                print(atom_arithmetic_as_logic_count)
-                print("Atom")
+                #print(atom_arithmetic_as_logic_count)
+                #print("Atom")
                 check_arithmetic_as_logic.append(line)
-            else:
-                print("Not atom")
 
             if self.check_logic_as_control_flow(line):
                 atom_logic_as_control_flow_count += 1
-                print(atom_logic_as_control_flow_count)
-                print("Atom")
+                #print(atom_logic_as_control_flow_count)
+                #print("Atom")
                 check_logic_as_control_flow.append(line)
-            else:
-                print("Not atom")
 
             if self.check_omitted_curly_braces(line):
                 atom_omitted_curly_braces_count += 1
-                print(atom_omitted_curly_braces_count)
-                print("Atom")
+                #print(atom_omitted_curly_braces_count)
+                #print("Atom")
                 check_omitted_curly_braces.append(line)
-            else:
-                print("Not atom")
 
             if self.check_change_of_literal_encoding(line):
                 atom_change_of_literal_encoding_count += 1
-                print(atom_change_of_literal_encoding_count)
-                print("Atom")
+                #print(atom_change_of_literal_encoding_count)
+                #print("Atom")
                 check_change_of_literal_encoding.append(line)
-            else:
-                print("Not atom")
 
             if self.check_infix_operator_precedence(line):
                 atom_infix_operator_precedence_count += 1
-                print(atom_infix_operator_precedence_count)
-                print("Atom")
+                #print(atom_infix_operator_precedence_count)
+                #print("Atom")
                 check_infix_operator_precedence.append(line)
-            else:
-                print("Not atom")
 
         check_repurposed_variable = []
         check_dead_repeated = []
@@ -346,21 +371,17 @@ class ConfusionAtomDetector:
         for i in range (len(line_list)-1):
             if self.check_repurposed_variable(line_list[i], line_list[i+1]):
                 atom_repurposed_variable_count += 1
-                print(atom_repurposed_variable_count)
-                print("Atom")
-                check_repurposed_variable.append(line)
-            else:
-                print("Not atom")
+                #print(atom_repurposed_variable_count)
+                #print("Atom")
+                cs = line_list[i] + ', ' + line_list[i+1]
+                check_repurposed_variable.append(cs)
 
             if self.check_dead_repeated(line_list[i], line_list[i+1]):
                 atom_dead_repeated_count += 1
-                print(atom_dead_repeated_count)
-                print("Atom")
+                #print(atom_dead_repeated_count)
+                #print("Atom")
                 cs = line_list[i] + ', ' + line_list[i+1]
                 check_dead_repeated.append(cs)
-            else:
-                print("Not atom")
-
 
         #print("Total type conversion atoms:")
         #print(atom_type_conversion_count)
@@ -392,6 +413,41 @@ class ConfusionAtomDetector:
         tracker_dict["change_of_literal_encoding"] = check_change_of_literal_encoding
         tracker_dict["infix_operator_precedence"] = check_infix_operator_precedence
 
+        return "end-1"
+
+    def count_atoms_for_indentation(self, line_list):
+
+        atom_remove_indentation_count = 0
+        atom_indentation_count = 0
+
+        check_remove_indentation = []
+        check_indentation = []
+
+        for i in range (len(line_list)-2):
+            if self.check_remove_indentation(line_list[i], line_list[i+1], line_list[i+2]):
+                atom_remove_indentation_count += 1
+                #print(atom_repurposed_variable_count)
+                #print("Atom")
+                cs = line_list[i] + line_list[i+1] + line_list[i+2]
+                check_remove_indentation.append(cs)
+        
+        for i in range (len(line_list)-1):
+            if self.check_indentation(line_list[i], line_list[i+1]):
+                atom_indentation_count += 1
+                #print(atom_repurposed_variable_count)
+                #print("Atom")
+                cs = line_list[i] + line_list[i+1]
+                check_indentation.append(cs)
+
+        #print("Total type conversion atoms:")
+        #print(atom_type_conversion_count)
+
+        atom_dict["remove_indentation"] = atom_remove_indentation_count
+        atom_dict["indentation"] = atom_indentation_count
+
+        tracker_dict["remove_indentation"] = check_remove_indentation
+        tracker_dict["indentation"] = check_indentation
+
         print("\n")
         print(atom_dict)
         print('\n')
@@ -406,12 +462,14 @@ class ConfusionAtomDetector:
             vc = 0
             for value in tracker_dict[key]:
                 vc = vc + 1
-                if key!='dead_repeated' or key!='repurposed_variable':
-                    print("Statement {}: {}".format(vc, value))
-                else:
+                if key=='dead_repeated' or key=='repurposed_variable' or key=='indentation':
                     print("Statement pair {}: {}".format(vc, value))
+                elif key=='remove_indentation':
+                    print("Statement triplet {}: {}".format(vc, value))
+                else:
+                    print("Statement {}: {}".format(vc, value))
 
             print('\n')
         print("\n")
 
-        return "end"
+        return "end-2"
