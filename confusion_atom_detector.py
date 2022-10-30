@@ -134,7 +134,7 @@ class ConfusionAtomDetector:
 
     def check_logic_as_control_flow(self, statement):
         arithmetic_operators = "(\+\+|--|\+=|-=|\*=|/=|%=)"
-        w = re.search(f".*{arithmetic_operators}.*(\|\||&&).*{arithmetic_operators}.*", "v1=++v1>0||++v2>0;")
+        w = re.search(f".*{arithmetic_operators}.*(\|\||&&).*{arithmetic_operators}.*", statement)
         # print(w)
         print(statement)
         return True if w else False

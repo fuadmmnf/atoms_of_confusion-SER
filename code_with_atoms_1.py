@@ -1,5 +1,5 @@
-#7 done perfectly
-#issue in 3 types of atom detection
+#8 done perfectly
+#issue in 2 types of atom detection
 #remaining 2 need consecutive two statements need touch up
 #additional 3 not done yet
 
@@ -8,7 +8,7 @@ previous_value = 1
 
 a = 1
 b = 10
-#infix_operator_precedence - 6
+#infix_operator_precedence
 value = a - b / 2
 value = a + 2 * b
 
@@ -39,7 +39,7 @@ if v1==3 {v2=2} else {v2=1}
 (new_value-3)*(value-4)!=0
 v1!=3 && v2!=4
 
-#logic_as_control_flow 64
+#logic_as_control_flow 
 new_value == ++new_value > 0 || ++value > 0
 v2 == --v1 < 9 && v2++ = 0;
 
