@@ -1,5 +1,5 @@
-#6 done perfectly
-#issue in 4 types of atom detection
+#7 done perfectly
+#issue in 3 types of atom detection
 #remaining 2 need consecutive two statements need touch up
 #additional 3 not done yet
 
@@ -10,6 +10,7 @@ a = 1
 b = 10
 #infix_operator_precedence - 6
 value = a - b / 2
+value = a + 2 * b
 
 #post_inc_dec
 value = previous_value++
@@ -20,7 +21,7 @@ value = ++previous_value
 
 var2 = 22
 
-#constant_variable - 18
+#constant_variable 
 new_value = value
 var1=var2
 var3="saaj"

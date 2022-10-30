@@ -33,7 +33,7 @@ class ConfusionAtomDetector:
         total_op = plus + minus + mul + div
         par = re.findall("[(]", statement)
 
-        return True if (len(total_op) > 1 and len(par) == 0) else False
+        return True if (len(total_op) > 1 and len(par) == 0 and "++" not in statement and "--" not in statement) else False
 
     def check_post_inc_dec(self, statement):
         statement.replace(" ", "")
