@@ -1,5 +1,5 @@
 import re
-
+import csv
 
 class ConfusionAtomDetector:
     totalAtomCount = 0
@@ -277,6 +277,7 @@ class ConfusionAtomDetector:
     def count_atoms(self, line_list):
 
         # type_conversion
+        atom_dict['file'] = self.file
         atom_type_conversion_count = 0
         atom_post_inc_dec_count = 0
         atom_pre_inc_dec_count = 0
@@ -451,6 +452,20 @@ class ConfusionAtomDetector:
         print("\n")
         print(atom_dict)
         print('\n')
+
+        field_names = []
+        for key in atom_dict:
+            field_names.append(key)
+        
+        print(field_names)
+
+        rows = []
+        rows.append(atom_dict)
+
+        with open('atoms.csv', 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames = field_names)
+            writer.writeheader()
+            writer.writerows(rows)
         
         for key in tracker_dict:
             print("atom type: ", key)
