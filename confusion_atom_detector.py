@@ -356,7 +356,8 @@ class ConfusionAtomDetector:
                 atom_dead_repeated_count += 1
                 print(atom_dead_repeated_count)
                 print("Atom")
-                check_dead_repeated.append(line)
+                cs = line_list[i] + ', ' + line_list[i+1]
+                check_dead_repeated.append(cs)
             else:
                 print("Not atom")
 
@@ -405,7 +406,11 @@ class ConfusionAtomDetector:
             vc = 0
             for value in tracker_dict[key]:
                 vc = vc + 1
-                print("Statement {}: {}".format(vc, value))
+                if key!='dead_repeated' or key!='repurposed_variable':
+                    print("Statement {}: {}".format(vc, value))
+                else:
+                    print("Statement pair {}: {}".format(vc, value))
+
             print('\n')
         print("\n")
 
