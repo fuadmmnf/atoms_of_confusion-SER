@@ -91,37 +91,36 @@ class ConfusionAtomDetector:
         print(statement)
 
         if "=" in statement:
-            x = re.split("=", statement)
-            # print(x)
+            if ('+' not in statement) and ('-' not in statement) and ('*' not in statement) and ('/' not in statement) and ('(' not in statement) and ('[' not in statement) and ('pow' not in statement) and ('?' not in statement) and ('!' not in statement) and (':' not in statement) and ('<' not in statement) and ('>' not in statement) and ('&' not in statement) and ('|' not in statement) and ('%' not in statement) and ('{' not in statement):
+                x = re.split("=", statement)
+                # print(x)
 
-            lhs = x[0]
-            rhs = x[1]
+                lhs = x[0]
+                rhs = x[1]
 
-            y = re.search("^\".*\"$", rhs)
-            # print(rhs)
-            quote_exists = False
-            is_number = False
+                y = re.search("^\".*\"$", rhs)
+                # print(rhs)
+                quote_exists = False
+                is_number = False
 
-            if y:
-                quote_exists = True
-            
-            rhs = rhs.strip()
-            if rhs.isdigit():
-                is_number = True
-            if rhs.isdigit() == False:
-                print("**********************")
-                print(rhs)
+                if y:
+                    quote_exists = True
+                
+                rhs = rhs.strip()
+                if rhs.isdigit():
+                    is_number = True
 
-            if is_number == False:
-                if quote_exists:
-                    return False
-                #w = re.search("[a-zA-z_]+[a-zA-z0-9]*", statement)
-                # print("atom")
-                #return True if w else False
-                if quote_exists == False and ('+' not in rhs) and ('-' not in rhs) and ('*' not in rhs) and ('/' not in rhs) and ('(' not in rhs) and ('[' not in rhs) and ('pow' not in rhs) and ('?' not in rhs) and ('!' not in rhs) and (':' not in rhs) and ('<' not in rhs) and ('>' not in rhs) and ('&' not in rhs) and ('|' not in rhs) and ('%' not in rhs):
-                    return True
-                else:
-                    return False
+                if is_number == False:
+                    if quote_exists:
+                        return False
+                    #w = re.search("[a-zA-z_]+[a-zA-z0-9]*", statement)
+                    # print("atom")
+                    #return True if w else False
+                    if quote_exists == False:
+                        #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+                        #print(statement)
+                        return True
+        return False   
 
     def check_conditional_operator(self, statement):
         print(statement)
@@ -397,6 +396,11 @@ class ConfusionAtomDetector:
         
         for key in tracker_dict:
             print("atom type: ", key)
+            dash_len = len("atom type: ") + len(key)
+            dash_string = ""
+            for dl in range(0, dash_len+2):
+                dash_string = dash_string + '-'
+            print(dash_string)
             vc = 0
             for value in tracker_dict[key]:
                 vc = vc + 1
