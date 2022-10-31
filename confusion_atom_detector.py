@@ -1,5 +1,6 @@
-import re
 import csv
+import re
+
 
 class ConfusionAtomDetector:
     totalAtomCount = 0
