@@ -230,6 +230,7 @@ class MetricsGenerator(object):
                     metrics_list[k].append(v)
 
             # print(metrics_list)
+
             df = pd.DataFrame.from_dict(metrics_list)
             res_absolute_path = pathlib.Path(__file__).parent / 'res' / f"{project_folder.split('/')[-1]}.csv"
             df.to_csv(res_absolute_path, index=False)
