@@ -462,7 +462,7 @@ class ConfusionAtomDetector:
         rows = []
         rows.append(atom_dict)
 
-        with open('atoms.csv', 'w') as csvfile:
+        with open('res/atoms.csv', 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames = field_names)
             writer.writeheader()
             writer.writerows(rows)
