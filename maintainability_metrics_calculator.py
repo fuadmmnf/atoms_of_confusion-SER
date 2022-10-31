@@ -195,6 +195,7 @@ class MetricsGenerator(object):
         # print(metrics)
         return metrics
 
+
     def generate_report_for_repositories(self, folder_path, languages="Java"):
         folder_absolute_path = pathlib.Path(__file__).parent / folder_path
         project_folders = [join(folder_absolute_path, f) for f in os.listdir(folder_absolute_path) if
