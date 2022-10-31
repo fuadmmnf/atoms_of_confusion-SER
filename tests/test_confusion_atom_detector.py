@@ -10,7 +10,7 @@ class TestConfusionAtomDetector(TestCase):
     #    code = 'v   ++; a--: --v; _--'
     #    self.assertEqual(self.cad.post_increment_decrement(code), ['v   ++', 'a--', '_--'])
 
-    def test_change_of_literal_encoding(self):
+    def test_check_change_of_literal_encoding(self):
         statements = ["v1 = 013;", "v2 =045;"]
         expected = [True, True]
         for i in range(len(statements)):
@@ -31,8 +31,8 @@ class TestConfusionAtomDetector(TestCase):
 
     def test_check_pre_inc_dec(self):
         statements = ["var1=++var1", "var1=++var2", "var1=var2", "var1+=1", "var1+=1", "something=++previous",
-                      "var1=var2"]
-        expected = [False, True, False, False, False, True, False]
+                      "var1=var2", "value = ++previous_value"]
+        expected = [False, True, False, False, False, True, False, True]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_pre_inc_dec(statements[i]), expected[i])
 
@@ -68,9 +68,9 @@ class TestConfusionAtomDetector(TestCase):
             self.assertEqual(self.cad.check_repurposed_variable(statements[i], next_statements[i]), expected[i])
 
     def test_check_dead_repeated(self):
-        statements = ["v1 = 1;", "v1 =1"]
-        next_statements = ["v1 = 2;", "v1 +=1"]
-        expected = [True, False]
+        statements = ["v1 = 1;", "v1 =1", "v1=1"]
+        next_statements = ["v1 = 2;", "v1 +=1", "v1=++v1"]
+        expected = [True, False, True]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_dead_repeated(statements[i], next_statements[i]), expected[i])
 
@@ -85,3 +85,8 @@ class TestConfusionAtomDetector(TestCase):
         expected = [True, False, False]
         for i in range(len(statements)):
             self.assertEqual(self.cad.check_type_conversion(statements[i]), expected[i])
+
+    #def test_read_file_and_write_csv(self):
+    #    #files = ['']
+    #    for i in range(1):
+    #        self.assertEqual(self.cad.read_file_and_write_csv())
