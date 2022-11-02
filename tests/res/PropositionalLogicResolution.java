@@ -22,6 +22,9 @@ public class PropositionalLogicResolution {
                     if( i == j) continue;
                     List<String> splittedSentence1 = Arrays.asList(knowledgeBaseSentences.get(i).split("\\|"));
                     List<String> splittedSentence2 = Arrays.asList(knowledgeBaseSentences.get(j).split("\\|"));
+                    List<String> splittedSentence2 = Arrays.asList(knowledgeBaseSentences.get(j).split("\\|"));
+                    //eta dhorte parena
+                    splittedSentence2 = Arrays.asList(knowledgeBaseSentences.get(j).split("\\|"));
 
                     for(String literal: splittedSentence1){
 

@@ -1,2 +1,2 @@
 file,type_conversion,post_inc_dec,pre_inc_dec,constant_variable,conditional_operator,arithmetic_as_logic,logic_as_control_flow,repurposed_variable,dead_repeated,omitted_curly_braces,change_of_literal_encoding,infix_operator_precedence,remove_indentation,indentation
-tests/res/PropositionalLogicResolution.java,0,1,1,1,2,0,0,1,3,7,0,0,6,4
+tests/res/PropositionalLogicResolution.java,0,1,1,1,2,0,0,1,7,7,0,1,6,4

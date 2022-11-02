@@ -1,6 +1,8 @@
 import csv
 import re
 
+from nose import run_exit
+
 class ConfusionAtomDetector:
     totalAtomCount = 0
     _java_variable_regex = '[a-zA-z_]+[a-zA-z0-9]*'
@@ -152,16 +154,16 @@ class ConfusionAtomDetector:
             # print(next_w)
             if (next_w):
                 x = re.split(";", statement)
-                print("x: ", x)
+                #print("x: ", x)
                 term1 = x[0]
-                print("term1: ", term1)
+                #print("term1: ", term1)
                 term3 = x[2].strip()
-                print("term3: ", term3)
+                #print("term3: ", term3)
 
-                print("R---------------------------------------------------------------------R")
+                #print("R---------------------------------------------------------------------R")
 
                 i = re.split("=", term1)
-                print("i: ", i)
+                #print("i: ", i)
                 #j = re.split("=", i[2])
                 j = i[0]
                 j = j.replace("for", "")
@@ -169,12 +171,12 @@ class ConfusionAtomDetector:
                 j = j.replace("int", "")
                 j = j.strip()
 
-                print("j: ", j)
+                #print("j: ", j)
 
                 # check if j[0] matches with nextStatements 3rd term
                 next_x = re.split(";", next_statement)
                 next_term3 = next_x[2].strip()
-                print("next_term3: ", next_term3)
+                #print("next_term3: ", next_term3)
                 next_term3 = next_term3.replace("{", "")
                 next_term3 = next_term3.replace(")", "")
 
@@ -182,31 +184,73 @@ class ConfusionAtomDetector:
                 for i in range(len(next_term3) - 2):
                     res += next_term3[i]
                 
-                print("res: ", res)
+                #print("res: ", res)
 
                 return True if res == j else False
 
     def check_dead_repeated(self, statement, next_statement):
         statement.replace(" ", "")
+        global space_lhs
+        global space_next_lhs
+        global lhs
+        global next_lhs
 
         if "=" in statement:
             x = re.split("=", statement)
 
-            lhs = x[0]
+            lhs = x[0].strip()
             rhs = x[1]
+
+            #print("lhs: ", lhs)
+            #print("rhs: ", rhs)
+
+            if " " in lhs:
+                space_lhs = lhs.split(" ")
+                space_lhs = space_lhs[1]
 
             next_statement.replace(" ", "")
 
             if "=" in next_statement:
                 y = re.split("=", next_statement)
 
-                next_lhs = y[0]
+                next_lhs = y[0].strip()
                 next_rhs = y[1]
+
+                if " " in next_lhs:
+                    space_next_lhs = next_lhs.split(" ")
+                    space_next_lhs = space_next_lhs[1]
 
                 #print(statement)
                 #print(next_statement)
                 #return True if (lhs == next_lhs and '+' not in next_rhs and '-' not in next_rhs) else False
-                return True if lhs == next_lhs else False
+
+                lhs = lhs.strip()
+                next_lhs = next_lhs.strip()
+                space_lhs = space_lhs.strip()
+                space_next_lhs = space_next_lhs.strip()
+
+                print("^^^^^^^^^^^^^^^^^^^^")
+                print("lhs: ", lhs)
+                print("next_lhs: ", next_lhs)
+
+
+                if " " in lhs and " " not in next_lhs:
+                    if space_lhs == next_lhs:
+                        return True
+                
+                if " " in lhs and " " in next_lhs:
+                    if space_lhs == space_next_lhs:
+                        return True
+                
+                if " " not in lhs and " " in next_lhs:
+                    if lhs == space_next_lhs:
+                        return True
+                
+                elif lhs == next_lhs:
+                    return True
+                
+                else:
+                    return False
 
     def check_omitted_curly_braces(self, statement):
         w = re.search("^if.*", statement)
@@ -226,13 +270,13 @@ class ConfusionAtomDetector:
         return False
 
     def check_indentation(self, statement, next_statement):
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$")
-        print(statement)
+        #print("$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        #print(statement)
         if ('while' in statement) or ('if' in statement) or ('for' in statement):
             if '{' in statement:
                 if next_statement[0]==" ":
-                    print(statement)
-                    print(next_statement)
+                    #print(statement)
+                    #print(next_statement)
                     return True
         return False
 
@@ -254,7 +298,7 @@ class ConfusionAtomDetector:
             #print("Line{}: {}".format(count, line))
             if len(line)!=0:
             #print(line[0])
-                if (line[0]!='#'):
+                if "#" not in line or "//" not in line:
                     line_list.append(line)
 
         return line_list
@@ -277,7 +321,7 @@ class ConfusionAtomDetector:
             #print("Line{}: {}".format(count, line))
             if len(line)!=0:
             #print(line[0])
-                if (line[0]!='#'):
+                if "#" not in line or "//" not in line: 
                     line_list.append(line)
 
         return line_list
