@@ -174,12 +174,15 @@ class ConfusionAtomDetector:
                 # check if j[0] matches with nextStatements 3rd term
                 next_x = re.split(";", next_statement)
                 next_term3 = next_x[2].strip()
+                print("next_term3: ", next_term3)
+                next_term3 = next_term3.replace("{", "")
+                next_term3 = next_term3.replace(")", "")
 
                 res = ''
-                for i in range(len(next_term3) - 3):
+                for i in range(len(next_term3) - 2):
                     res += next_term3[i]
                 
-                #print(res + j)
+                print("res: ", res)
 
                 return True if res == j else False
 
