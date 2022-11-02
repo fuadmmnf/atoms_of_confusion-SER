@@ -23,7 +23,8 @@ public class PropositionalLogicResolution {
                     List<String> splittedSentence1 = Arrays.asList(knowledgeBaseSentences.get(i).split("\\|"));
                     List<String> splittedSentence2 = Arrays.asList(knowledgeBaseSentences.get(j).split("\\|"));
                     List<String> splittedSentence2 = Arrays.asList(knowledgeBaseSentences.get(j).split("\\|"));
-                    //eta dhorte parena
+                    //eta dhorte parena - commen dhorte parena
+                    // comment e // thakay etake abar infix operator precedence dhore
                     splittedSentence2 = Arrays.asList(knowledgeBaseSentences.get(j).split("\\|"));
 
                     for(String literal: splittedSentence1){
@@ -60,6 +61,7 @@ public class PropositionalLogicResolution {
 
         resultString = removeLiteral(resultString, "~"+literal);
         resultString = removeLiteral(resultString, literal);
+        literal = 019;
 
         return resultString;
     }
