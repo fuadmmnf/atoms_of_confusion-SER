@@ -10,7 +10,7 @@ public class PropositionalLogicResolution {
 
         List<String> knowledgeBaseSentences = new ArrayList<>(KnowledgeBaseSingleton.getInstance().getKnowledgeBaseSentences());
         knowledgeBaseSentences.add("~"+ entailQuery);
-        for(int it=0; it<4; it++) {
+        for(int it=0; it<4; it++) { //bracket je close hoynai eta indentation e dhortesena
             int prevIterSentenceSize = knowledgeBaseSentences.size();
             List<Integer> joinedIndices = new ArrayList<>();
 
@@ -23,6 +23,7 @@ public class PropositionalLogicResolution {
                     List<String> splittedSentence1 = Arrays.asList(knowledgeBaseSentences.get(i).split("\\|"));
                     List<String> splittedSentence2 = Arrays.asList(knowledgeBaseSentences.get(j).split("\\|"));
                     List<String> splittedSentence2 = Arrays.asList(knowledgeBaseSentences.get(j).split("\\|"));
+                    //ager 3 tay extra indenation nai but jeta ase oitakei dhortese remove indentation e 
                     //eta dhorte parena - commen dhorte parena
                     // comment e // thakay etake abar infix operator precedence dhore
                     splittedSentence2 = Arrays.asList(knowledgeBaseSentences.get(j).split("\\|"));
