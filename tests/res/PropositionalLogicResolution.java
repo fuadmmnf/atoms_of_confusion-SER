@@ -15,6 +15,7 @@ public class PropositionalLogicResolution {
             List<Integer> joinedIndices = new ArrayList<>();
 
             int joinedCount = 0;
+            string name = "noshin"
             for(int i=0; i<prevIterSentenceSize; i++){
                 for(int j=i+1; j<prevIterSentenceSize; i++){
 
