@@ -72,7 +72,12 @@ public class PropositionalLogicResolution {
 //            processedString = inputString.replaceFirst("//|"+searchPattern, "");
             processedString = inputString.substring(0, pos-1) + inputString.substring(pos+searchPattern.length());
         }
+        searchPattern = value == 3 ? 2 : 1
+        searchPattern == 3? 2 : 1 + searchPattern == 5
+        if searchPattern==3 {searchPattern=2} else {searchPattern=1}
+
         return processedString;
     }
+    
 
 }
