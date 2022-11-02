@@ -1,7 +1,6 @@
 import csv
 import re
 
-
 class ConfusionAtomDetector:
     totalAtomCount = 0
     _java_variable_regex = '[a-zA-z_]+[a-zA-z0-9]*'
@@ -95,10 +94,11 @@ class ConfusionAtomDetector:
         if "=" in statement:
             if ('+' not in statement) and ('-' not in statement) and ('*' not in statement) and ('/' not in statement) and ('(' not in statement) and ('[' not in statement) and ('pow' not in statement) and ('?' not in statement) and ('!' not in statement) and (':' not in statement) and ('<' not in statement) and ('>' not in statement) and ('&' not in statement) and ('|' not in statement) and ('%' not in statement) and ('{' not in statement):
                 x = re.split("=", statement)
-                # print(x)
+                print("x for check_constant_variable: ", x)
 
                 lhs = x[0]
                 rhs = x[1]
+                #rhs = rhs.replace()
 
                 y = re.search("^\".*\"$", rhs)
                 quote_exists = False
@@ -152,15 +152,24 @@ class ConfusionAtomDetector:
             # print(next_w)
             if (next_w):
                 x = re.split(";", statement)
-                # print(x)
+                print("x: ", x)
                 term1 = x[0]
+                print("term1: ", term1)
                 term3 = x[2].strip()
+                print("term3: ", term3)
 
                 print("R---------------------------------------------------------------------R")
 
-                i = re.split(" ", term1)
-                # print(i[2])
-                j = re.split("=", i[2])
+                i = re.split("=", term1)
+                print("i: ", i)
+                #j = re.split("=", i[2])
+                j = i[0]
+                j = j.replace("for", "")
+                j = j.replace("(", "")
+                j = j.replace("int", "")
+                j = j.strip()
+
+                print("j: ", j)
 
                 # check if j[0] matches with nextStatements 3rd term
                 next_x = re.split(";", next_statement)
@@ -170,9 +179,9 @@ class ConfusionAtomDetector:
                 for i in range(len(next_term3) - 3):
                     res += next_term3[i]
                 
-                #print(res)
+                #print(res + j)
 
-                return True if res == j[0].strip() else False
+                return True if res == j else False
 
     def check_dead_repeated(self, statement, next_statement):
         statement.replace(" ", "")
@@ -303,7 +312,8 @@ class ConfusionAtomDetector:
         check_change_of_literal_encoding = []
         check_infix_operator_precedence = []
 
-        for line in line_list:
+        for line in line_list: 
+            line = line.replace(";", "")
             if self.check_type_conversion(line):
                 atom_type_conversion_count += 1
                 #print(atom_type_conversion_count)
@@ -463,7 +473,7 @@ class ConfusionAtomDetector:
         rows = []
         rows.append(atom_dict)
 
-        with open('res/atoms.csv', 'w') as csvfile:
+        with open('atoms.csv', 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames = field_names)
             writer.writeheader()
             writer.writerows(rows)

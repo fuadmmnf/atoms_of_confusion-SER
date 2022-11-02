@@ -2,7 +2,7 @@ from confusion_atom_detector import ConfusionAtomDetector
 
 if __name__ == '__main__':
     #pass
-    filepath = 'tests/res/code_with_atoms_3.py'
+    filepath = 'tests/res/PropositionalLogicResolution.java'
     obj_cad = ConfusionAtomDetector(filepath)
 
     line_list = obj_cad.read_file_and_write_csv(filepath)
