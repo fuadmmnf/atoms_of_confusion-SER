@@ -16,7 +16,7 @@ public class PropositionalLogicResolution {
 
             int joinedCount = 0;
             for(int i=0; i<prevIterSentenceSize; i++){
-                for(int j=i+1; j<prevIterSentenceSize; j++){
+                for(int j=i+1; j<prevIterSentenceSize; i++){
 
                     if( i == j) continue;
                     List<String> splittedSentence1 = Arrays.asList(knowledgeBaseSentences.get(i).split("\\|"));
@@ -33,6 +33,8 @@ public class PropositionalLogicResolution {
                             if(joinedIndices.contains(i)) joinedIndices.add(i);
                             if(joinedIndices.contains(j)) joinedIndices.add(j);
                             joinedCount++;
+                            newJoinedCount = joinedCount++
+                            newJoinedCount = ++joinedCount
                         }
                     }
 
