@@ -1,0 +1,15 @@
+project,domain,cves,since
+linux,os,3284,1995
+freebsd,os,371,1990
+gecko-dev,browser,2,2004
+gcc,compiler,6,2000
+webkit,browser,230,2007
+mongo,db,12,2013
+clang,compiler,1,2014
+mysql-server,db,247,1998
+subversion,vcs,39,2010
+emacs,editor,22,2000
+git,vcs,10,2006
+httpd,webserver,220,1996
+nginx,webserver,14,2009
+vim,editor,17,2008

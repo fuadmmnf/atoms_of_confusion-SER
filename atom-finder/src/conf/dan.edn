@@ -1,0 +1,5 @@
+{
+  :atom-finder-corpus-path "~/opt/src/atom-finder"
+
+  :system-include-paths []
+}
