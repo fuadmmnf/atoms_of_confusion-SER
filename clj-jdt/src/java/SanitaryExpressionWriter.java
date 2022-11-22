@@ -1,4 +1,4 @@
-package atom_finder;
+package java;
 
 import org.eclipse.cdt.internal.core.dom.rewrite.astwriter.*;
 import org.eclipse.cdt.core.dom.ast.IASTCastExpression;

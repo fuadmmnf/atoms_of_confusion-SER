@@ -1,6 +1,8 @@
 // https://github.com/eclipse/cdt/blob/master/core/org.eclipse.cdt.core.tests/parser/org/eclipse/cdt/core/parser/tests/scanner/FileCodeReaderFactory.java
 
-package clj_cdt;
+package java;
+import org.eclipse.jdt.core.index;
+import org.eclipse.jdt.core.dom.ASTParser;
 
 import org.eclipse.cdt.core.index.IIndexFileLocation;
 import org.eclipse.cdt.core.parser.FileContent;
