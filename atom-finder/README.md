@@ -5,10 +5,10 @@ in C projects.
 
 Contains facilities for:
 
- * Parsing C/C++ with Eclipse CDT library
- * Finding specific patterns in an AST
- * Traversing version histories through git
- * Parsing commit logs for bug/patch IDs
+* Parsing C/C++ with Eclipse CDT library
+* Finding specific patterns in an AST
+* Traversing version histories through git
+* Parsing commit logs for bug/patch IDs
 
 Output from this work formed the basis of our paper at the Mining Software
 Repositories 2018 conference: [Prevalence of Confusing Code in Software Projects - Atoms of
@@ -21,8 +21,9 @@ atoms of confusion described in our 2018 MSR paper you can run our code from the
 command-line as:
 
 ```sh
-lein find-atoms-in-dirs dir1 dir2 > atoms.edn
+lein find-atoms-in-dirs /media/fuad/CE62638F62637ADB/fuad/projects/atoms_of_confusion-SER/test_systems/ActionBarSherlock > /media/fuad/CE62638F62637ADB/fuad/projects/atoms_of_confusion-SER/res/atoms.edn
 ```
+#lein find-atoms-in-dirs dir1 dir2 > atoms.edn
 
 This command will loop over each of the directories provided (in the example
 above: `dir1 dir2`) and print an [edn](https://github.com/edn-format/edn) record
@@ -74,17 +75,20 @@ useful directories:
 This project is primariy written in Clojure(JVM), and uses many Java libraries.
 In order to run this project you should install:
 
- * [Leiningen](https://leiningen.org/) - The Clojure build manager.
- This tool will automatically download the right version of Clojure, resolve all the necessary libraries, run tests, and execute the program.
- * One of [Emacs](https://www.gnu.org/software/emacs/)/[CIDER](https://cider.readthedocs.io/en/latest/), [Sublime](https://www.sublimetext.com/)/[SublimeREPL](https://packagecontrol.io/packages/SublimeREPL), [Nightcode](https://sekao.net/nightcode/), or anything that offers you a clojure-centric workflow.
- The way one writes Clojure (and lisp in general) is a bit more interactive than traditional development.
- It's important to be able to evaluate code as you write it.
- 
+* [Leiningen](https://leiningen.org/) - The Clojure build manager.
+  This tool will automatically download the right version of Clojure, resolve all the necessary libraries, run tests,
+  and execute the program.
+* One of [Emacs](https://www.gnu.org/software/emacs/)/[CIDER](https://cider.readthedocs.io/en/latest/)
+  , [Sublime](https://www.sublimetext.com/)/[SublimeREPL](https://packagecontrol.io/packages/SublimeREPL)
+  , [Nightcode](https://sekao.net/nightcode/), or anything that offers you a clojure-centric workflow.
+  The way one writes Clojure (and lisp in general) is a bit more interactive than traditional development.
+  It's important to be able to evaluate code as you write it.
+
 After you've installed these tools, first run `lein test` to make sure everything is up and running.
 Then you should be able to develop in your editor, executing snippets of code as you go.
- 
+
 ## Using the framework to parse code
- 
+
 The first thing you might want to do, is parse some C code. There are three
 main functions for doing this, `parse-file`, `parse-source` and
 `parse-frag`. Both functions take a `String` as an argument, and return
@@ -100,18 +104,18 @@ program. For example:
 (parse-source "int main() { 1 + 1; }")                  ;; => CPPASTTranslationUnit
 (parse-frag "1 + 1")                                    ;; => CPPASTBinaryExpression
 ```
- 
+
 After you've parsed some code, you might reasonably want to see what it looks like:
- 
+
 ```clj
 (->> "gcc/testsuite/c-c++-common/wdate-time.c"
       parse-file
       (get-in-tree [2])
       print-tree)
 ```
-                               
+
 Which should output:
-           
+
 ```
 []  <SimpleDeclaration>                                      {:line 6, :off 238, :len 39}
 [0]  <SimpleDeclSpecifier>                                   {:line 6, :off 238, :len 10}
@@ -122,7 +126,7 @@ Which should output:
 [1 2 0]  <IdExpression>                                      {:line 6, :off 263, :len 13}
 [1 2 0 0]  <Name>                                            {:line 6, :off 263, :len 13}
 ```
-                                                       
+
 Some other useful functions are:
 
     print-tree     -> Prints a debug view of the tree structure of an AST plus metadata

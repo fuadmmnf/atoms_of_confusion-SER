@@ -1,6 +1,5 @@
 (defproject atom-finder "1.0.0"
   :description "Find atoms of confusion in source code"
-  :url "atomsofconfusion.com"
   :license {:name "The MIT License (MIT)"
             :url "http://opensource.org/licenses/MIT"}
   :dependencies [
@@ -18,6 +17,7 @@
                  [com.google.guava/guava "23.0"]
                  [clojail "1.0.6"]
                  [swiss-arrows "1.0.0"]
+                 [org.eclipse.jdt/core "3.8.2"]
                  ;[clj-cdt/clj-cdt "0.0.1"]
 
                  ;;;;;;;;;;;;;;;;;;;;;;   occasional dependencies   ;;;;;;;;;;;;;;;;;;;;;;
@@ -53,6 +53,7 @@
   :main atom-finder.core
   ;:aot [atom-finder.core]
   :plugins [[lein-codox "0.10.3"]
+            [com.github.clj-kondo/lein-clj-kondo "0.2.1"]
             ;[lein-localrepo "0.5.4"] ; needed until clj-cdt is published on clojars
             ]
   ;:codox {:namespaces [#"^atom-finder\.(?!instrumentation|results-sandbox)"

@@ -37,20 +37,20 @@
 
 (def atoms
   [
-   (ValidatedAtom :preprocessor-in-statement stmt-or-expr-define-parent? defines-in-stmt-or-expr)
+   ;(ValidatedAtom :preprocessor-in-statement stmt-or-expr-define-parent? defines-in-stmt-or-expr)
    (ValidatedAtom :logic-as-control-flow     logic-as-control-flow-atom? logic-as-control-flow-atoms)
    (ValidatedAtom :conditional               conditional-atom?           (default-finder conditional-atom?))
-   (ValidatedAtom :reversed-subscript        reversed-subscript-atom?    (default-finder reversed-subscript-atom?))
+   ;(ValidatedAtom :reversed-subscript        reversed-subscript-atom?    (default-finder reversed-subscript-atom?))
    (ValidatedAtom :literal-encoding          literal-encoding-atom?      (default-finder literal-encoding-atom?))
    (ValidatedAtom :post-increment            post-*crement-atom?         (default-finder post-*crement-atom?))
    (ValidatedAtom :pre-increment             pre-*crement-atom?          (default-finder pre-*crement-atom?))
-   (ValidatedAtom :comma-operator            comma-operator-atom?        (default-finder comma-operator-atom?))
+   ;(ValidatedAtom :comma-operator            comma-operator-atom?        (default-finder comma-operator-atom?))
    (ValidatedAtom :omitted-curly-braces      omitted-curly-braces-atom?  (default-finder omitted-curly-braces-atom?))
-   (ValidatedAtom :assignment-as-value       assignment-as-value-atom?   (default-finder assignment-as-value-atom?))
-   (ValidatedAtom :macro-operator-precedence macro-operator-precedence-atom?  macro-operator-precedence-finder)
+   ;(ValidatedAtom :assignment-as-value       assignment-as-value-atom?   (default-finder assignment-as-value-atom?))
+   ;(ValidatedAtom :macro-operator-precedence macro-operator-precedence-atom?  macro-operator-precedence-finder)
    (ValidatedAtom :operator-precedence       operator-precedence-atom?   (default-finder operator-precedence-atom?))
    (ValidatedAtom :repurposed-variable       repurposed-variable-atom?   repurposed-variable-atoms)
-   (ValidatedAtom :implicit-predicate        implicit-predicate-atom?    (default-finder implicit-predicate-atom?))
+   ;(ValidatedAtom :implicit-predicate        implicit-predicate-atom?    (default-finder implicit-predicate-atom?))
    (ValidatedAtom :type-conversion           type-conversion-atom?       (default-finder type-conversion-atom?))
   ])
 
