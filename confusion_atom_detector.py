@@ -5,8 +5,8 @@ import re
 class ConfusionAtomDetector:
     _java_variable_regex = '[a-zA-z_]+[a-zA-z0-9]*'
 
-    def __init__(self, file):
-        self.file = file
+    # def __init__(self, file):
+    #     self.file = file
 
     # def post_increment_decrement(self, code):
     #    return re.compile(rf'{self._java_variable_regex}\s*(?:\+\+|--)').findall(code)
@@ -100,7 +100,7 @@ class ConfusionAtomDetector:
                     '&' not in statement) and ('|' not in statement) and ('%' not in statement) and (
                     '{' not in statement):
                 x = re.split("=", statement)
-                print("x for check_constant_variable: ", x)
+                # print("x for check_constant_variable: ", x)
 
                 lhs = x[0]
                 rhs = x[1]
@@ -223,7 +223,8 @@ class ConfusionAtomDetector:
                 if " " in next_lhs:
                     space_next_lhs = next_lhs.split(" ")
                     space_next_lhs = space_next_lhs[1]
-
+                else:
+                    space_next_lhs = ""
                 # print(statement)
                 # print(next_statement)
                 # return True if (lhs == next_lhs and '+' not in next_rhs and '-' not in next_rhs) else False
@@ -232,10 +233,10 @@ class ConfusionAtomDetector:
                 next_lhs = next_lhs.strip()
                 space_lhs = space_lhs.strip()
                 space_next_lhs = space_next_lhs.strip()
-
-                print("^^^^^^^^^^^^^^^^^^^^")
-                print("lhs: ", lhs)
-                print("next_lhs: ", next_lhs)
+                #
+                # print("^^^^^^^^^^^^^^^^^^^^")
+                # print("lhs: ", lhs)
+                # print("next_lhs: ", next_lhs)
 
                 if " " in lhs and " " not in next_lhs:
                     if space_lhs == next_lhs:
@@ -334,10 +335,10 @@ class ConfusionAtomDetector:
     global tracker_dict
     tracker_dict = {}
 
-    def count_atoms(self, line_list):
-
+    def count_atoms(self, file):
+        line_list = self.read_file_and_write_csv(file)
         # type_conversion
-        atom_dict['file'] = self.file
+        atom_dict['file'] = file
         atom_type_conversion_count = 0
         atom_post_inc_dec_count = 0
         atom_pre_inc_dec_count = 0
@@ -462,20 +463,7 @@ class ConfusionAtomDetector:
         atom_dict["change_of_literal_encoding"] = atom_change_of_literal_encoding_count
         atom_dict["infix_operator_precedence"] = atom_infix_operator_precedence_count
 
-        tracker_dict["type_conversion"] = check_type_conversion
-        tracker_dict["post_inc_dec"] = check_post_inc_dec
-        tracker_dict["pre_inc_dec"] = check_pre_inc_dec
-        tracker_dict["constant_variable"] = check_constant_variable
-        tracker_dict["conditional_operator"] = check_conditional_operator
-        tracker_dict["arithmetic_as_logic"] = check_arithmetic_as_logic
-        tracker_dict["logic_as_control_flow"] = check_logic_as_control_flow
-        tracker_dict["repurposed_variable"] = check_repurposed_variable
-        tracker_dict["dead_repeated"] = check_dead_repeated
-        tracker_dict["omitted_curly_braces"] = check_omitted_curly_braces
-        tracker_dict["change_of_literal_encoding"] = check_change_of_literal_encoding
-        tracker_dict["infix_operator_precedence"] = check_infix_operator_precedence
-
-        return "end-1"
+        return atom_dict
 
     def count_atoms_for_indentation(self, line_list):
 
@@ -509,16 +497,16 @@ class ConfusionAtomDetector:
 
         tracker_dict["remove_indentation"] = check_remove_indentation
         tracker_dict["indentation"] = check_indentation
-
-        print("\n")
-        print(atom_dict)
-        print('\n')
+        #
+        # print("\n")
+        # print(atom_dict)
+        # print('\n')
 
         field_names = []
         for key in atom_dict:
             field_names.append(key)
 
-        print(field_names)
+        # print(field_names)
 
         rows = []
         rows.append(atom_dict)
@@ -529,23 +517,25 @@ class ConfusionAtomDetector:
             writer.writerows(rows)
 
         for key in tracker_dict:
-            print("atom type: ", key)
+            # print("atom type: ", key)
             dash_len = len("atom type: ") + len(key)
             dash_string = ""
             for dl in range(0, dash_len + 2):
                 dash_string = dash_string + '-'
-            print(dash_string)
+            # print(dash_string)
             vc = 0
             for value in tracker_dict[key]:
                 vc = vc + 1
                 if key == 'dead_repeated' or key == 'repurposed_variable' or key == 'indentation':
-                    print("Statement pair {}: {}".format(vc, value))
+                    # print("Statement pair {}: {}".format(vc, value))
+                    pass
                 elif key == 'remove_indentation':
-                    print("Statement triplet {}: {}".format(vc, value))
+                    # print("Statement triplet {}: {}".format(vc, value))
+                    pass
                 else:
-                    print("Statement {}: {}".format(vc, value))
-
-            print('\n')
-        print("\n")
+                    # print("Statement {}: {}".format(vc, value))
+                    pass
+            # print('\n')
+        # print("\n")
 
         return "end-2"
