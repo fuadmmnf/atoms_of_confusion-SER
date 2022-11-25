@@ -1,3 +1,4 @@
+import glob
 import os
 import sys
 import pathlib
@@ -33,9 +34,8 @@ if __name__ == '__main__':
         Path(pathlib.Path(__file__).parent / 'res/atoms' / project_folder.split('/')[-1]).mkdir(parents=True,
                                                                                                 exist_ok=True)
         print(project_folder)
-        # if project_folder.split('/')[-1] in ['ActionBarSherlock', 'Bukkit', 'clojure', 'commons-lang',
-        #                                      'elasticsearch', 'hadoop']:
-        #     continue
+        if project_folder.split('/')[-1] not in ['elasticsearch']:
+            continue
 
         repo = git.Repo(project_folder)
         master_branch = str(repo.branches[0])
@@ -53,14 +53,17 @@ if __name__ == '__main__':
             repo.git.checkout(tags[i].path, force=True)
             # print(repo.head.object.hexsha)
             print(f"{i + 1}/{len(tags)}: {project_folder.split('/')[-1]}")
-            files = []
-            for filepath in list(pathlib.Path(project_folder).glob('**/*.java')):
-                files.append(obj_cad.count_atoms(filepath))
+            files_dict = []
+            for root, subdirs, files in os.walk(project_folder):
+                for file in files:
+                    if not file.endswith('.java'):
+                        continue
+                    files_dict.append(obj_cad.count_atoms(str(os.path.join(root, file))).copy())
 
             output_absolute = pathlib.Path(__file__).parent / 'res/atoms' / project_folder.split('/')[
                 -1] / f"{i}_{tags[i].path.split('/')[-1]}.csv"
 
-            pd.DataFrame(files).to_csv(output_absolute)
+            pd.DataFrame(files_dict).to_csv(output_absolute)
             # line_list_2 = obj_cad.read_file_and_write_csv_for_indentation(filepath)
     # end_2 = obj_cad.count_atoms_for_indentation(line_list_2)
     # print(end)

@@ -35,7 +35,7 @@ class ConfusionAtomDetector:
         par = re.findall("[(]", statement)
 
         return True if (
-                    len(total_op) > 1 and len(par) == 0 and "++" not in statement and "--" not in statement) else False
+                len(total_op) > 1 and len(par) == 0 and "++" not in statement and "--" not in statement) else False
 
     def check_post_inc_dec(self, statement):
         statement.replace(" ", "")
@@ -48,7 +48,7 @@ class ConfusionAtomDetector:
             rhs = x[1]
 
             # print(statement)
-            if rhs[len(rhs) - 1] == "+" and rhs[len(rhs) - 2] == "+":
+            if len(rhs) > 1 and rhs[len(rhs) - 1] == "+" and rhs[len(rhs) - 2] == "+":
                 rhs = rhs.replace("++", "")
                 if rhs != lhs:
                     # print("atom")
@@ -75,7 +75,7 @@ class ConfusionAtomDetector:
             lhs = lhs.strip()
             rhs = rhs.strip()
 
-            if rhs[0] == "+" and rhs[1] == "+":
+            if len(rhs) > 1 and rhs[0] == "+" and rhs[1] == "+":
                 rhs = rhs.replace("++", "")
                 if rhs != lhs:
                     # print(rhs + lhs)
@@ -161,7 +161,7 @@ class ConfusionAtomDetector:
                 # print("x: ", x)
                 term1 = x[0]
                 # print("term1: ", term1)
-                term3 = x[2].strip()
+                term3 = x[2].strip() if len(x) > 2 else ''
                 # print("term3: ", term3)
 
                 # print("R---------------------------------------------------------------------R")
@@ -179,11 +179,13 @@ class ConfusionAtomDetector:
 
                 # check if j[0] matches with nextStatements 3rd term
                 next_x = re.split(";", next_statement)
-                next_term3 = next_x[2].strip()
-                # print("next_term3: ", next_term3)
-                next_term3 = next_term3.replace("{", "")
-                next_term3 = next_term3.replace(")", "")
-
+                if len(next_x) > 1:
+                    next_term3 = next_x[2].strip() if len(next_x) > 2 else ''
+                    # print("next_term3: ", next_term3)
+                    next_term3 = next_term3.replace("{", "")
+                    next_term3 = next_term3.replace(")", "")
+                else:
+                    next_term3 = ''
                 res = ''
                 for i in range(len(next_term3) - 2):
                     res += next_term3[i]
@@ -289,10 +291,12 @@ class ConfusionAtomDetector:
         # demonstrate readlines()
 
         # Using readlines()
-        file1 = open(file, 'r')
-        Lines = file1.readlines()
-        file1.close()
-
+        try:
+            file1 = open(file, 'r')
+            Lines = file1.readlines()
+            file1.close()
+        except:
+            Lines = []
         count = 0
         line_list = []
         # Strips the newline character
