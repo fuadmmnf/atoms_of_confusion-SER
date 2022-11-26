@@ -1,12 +1,15 @@
 import glob
 import os
 import sys
+import numpy as np
 import pathlib
 from collections import defaultdict
 from os.path import join
 import pandas as pd
 from pathlib import Path
 import seaborn as sns
+from scipy import stats
+import scikit_posthocs as sp
 
 import matplotlib.pyplot as plt
 
@@ -135,34 +138,72 @@ def atom_rates_graph():
     g.savefig(str(pathlib.Path(__file__).parent / "res/graphs/atom_wise_rate"))
     plt.clf()
 
-
     latest = pd.read_excel(str(pathlib.Path(__file__).parent / "res/latest_revisions.xlsx"),
-                                 sheet_name='latest_revisions')
+                           sheet_name='latest_revisions')
     pivot_df = pd.DataFrame()
 
-    for  index, row  in latest.iterrows():
+    for index, row in latest.iterrows():
         for a in identified_atoms_list:
-            pivot_df = pivot_df.append({"project": row['project'], "atom": a, "count": row[a]/row['loc']}, ignore_index=True)
+            pivot_df = pivot_df.append({"project": row['project'], "atom": a, "count": row[a] / row['loc']},
+                                       ignore_index=True)
     pivot_df = pivot_df.pivot("atom", 'project', 'count')
-    g = sns.heatmap(pivot_df, annot=pivot_df.rank(axis="columns")).get_figure()
-    plt.yticks(rotation=45)
-    ax.set(xlabel="projects", ylabel="atoms")
-    g.savefig(str(pathlib.Path(__file__).parent / "res/graphs/heatmap"))
+    fig, ax = plt.subplots(figsize=(40, 22))  # Sample figsize in inches
+    sns.set(font_scale=1.4)
+    sns.color_palette("light:b", as_cmap=True)
 
-    # kwargs = {
-    #     'heatmap': {
-    #         'vmin': 0,
-    #         'vmax': 0.3,
-    #         'cmap': 'viridis',
-    #     },
-    #     'figure': {
-    #         'figsize': (14, 10),
-    #     },
-    # }
-    #
-    # fig1, ax = plot_correlation_heatmap(pivot_df, bubble=True, annotate=False, **kwargs)
-    # fig1.savefig(str(pathlib.Path(__file__).parent / "res/graphs/heatmap"))
+    g = sns.heatmap(pivot_df, annot=pivot_df.rank(axis="rows"), ax=ax, cmap="Blues")
+    g.set_xticklabels(g.get_xticklabels(), fontsize=20)
+    g.set_yticklabels(g.get_yticklabels(), fontsize=20)
+
+    # g.xaxis.tick_top()  # x axis on top
+    # g.xaxis.set_label_position('top')
+    locs, labels = plt.xticks()
+    plt.setp(labels, rotation=45)
+    # g.set(xlabel="projects", ylabel="atom")
+    g.get_figure().savefig(str(pathlib.Path(__file__).parent / "res/graphs/heatmap"))
+
     plt.clf()
 
 
-atom_rates_graph()
+# atom_rates_graph()
+
+def friedman_test():
+    latest = pd.read_excel(str(pathlib.Path(__file__).parent / "res/latest_revisions.xlsx"),
+                           sheet_name='latest_revisions')
+    groups = []
+    for a in identified_atoms_list:
+        # print(row[identified_atoms_list].values)
+        groups.append(latest[a].values / latest['loc'].values)
+    print(
+        stats.friedmanchisquare(groups[0], groups[1], groups[2], groups[3], groups[4], groups[5], groups[6], groups[7],
+                                groups[8], groups[9], groups[10], groups[11]))
+
+    # Combine three groups into one array
+
+    print(len(groups))
+    data = np.array(groups)
+
+    # Conduct the Nemenyi post-hoc test
+    df = sp.posthoc_nemenyi_friedman(data.T)
+    print(df)
+    df.columns = identified_atoms_list
+    df.index = identified_atoms_list
+    df.to_csv(str(pathlib.Path(__file__).parent / "res/friedman_nemenyi.csv"))
+    print(df)
+
+
+# friedman_test()
+
+
+def atom_metric_correlation():
+    folder_absolute_path = pathlib.Path(__file__).parent / "res/atoms"
+
+    project_folders = [join(folder_absolute_path, f) for f in os.listdir(folder_absolute_path) if
+                       os.path.isdir(join(folder_absolute_path, f))]
+    for project_folder in project_folders:
+        project_name = project_folder.split('/')[-1]
+        atom_df = pd.read_csv(str(folder_absolute_path / (project_name + '_total.csv')))
+        metric_df = pd.read_csv(str(pathlib.Path(__file__).parent / f"res/ck/{project_name}_total.csv"))
+
+
+atom_metric_correlation()
