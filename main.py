@@ -34,7 +34,7 @@ if __name__ == '__main__':
         Path(pathlib.Path(__file__).parent / 'res/atoms' / project_folder.split('/')[-1]).mkdir(parents=True,
                                                                                                 exist_ok=True)
         print(project_folder)
-        if project_folder.split('/')[-1] not in ['elasticsearch']:
+        if project_folder.split('/')[-1] not in ['guava']:
             continue
 
         repo = git.Repo(project_folder)

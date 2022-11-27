@@ -91,7 +91,7 @@ def latest_atom_revision():
         project_df = pd.read_csv(str(folder_absolute_path / file))
         project_df = project_df.assign(project=project_name)
         project_df = project_df.assign(
-            loc=metric_df.loc[metric_df['revision'] == metric_df['revision'].max()]['loc'].iloc[0])
+            loc=metric_df.loc[metric_df['revision'] == metric_df['revision'].max()]['loc'].iloc[0]/1000)
         # project_df['loc'] = metric_df.loc[metric_df['revision'] == metric_df['revision'].max()]['loc'].to_numpy()
         # print(metric_df.loc[metric_df['revision'] == metric_df['revision'].max()]['loc'].iloc[0])
         latest_atoms = pd.concat([latest_atoms, project_df.loc[project_df['revision'] == project_df['revision'].max()]])
@@ -102,7 +102,7 @@ def latest_atom_revision():
 
 
 def atom_rates_graph():
-    project_wise_df = pd.read_excel(str(pathlib.Path(__file__).parent / "res/latest_revisions.xlsx"),
+    project_wise_df = pd.read_excel(str(pathlib.Path(__file__).parent / "res/merged.xlsx"),
                                     sheet_name='project_wise_rate')
     g = sns.catplot(data=project_wise_df.sort_values('Rate', ascending=False), x="Rate", y="Project", kind="bar",
                     alpha=0.35)
@@ -120,7 +120,7 @@ def atom_rates_graph():
     g.savefig(str(pathlib.Path(__file__).parent / "res/graphs/project_wise_rate"))
     plt.clf()
 
-    atom_wise_df = pd.read_excel(str(pathlib.Path(__file__).parent / "res/latest_revisions.xlsx"),
+    atom_wise_df = pd.read_excel(str(pathlib.Path(__file__).parent / "res/merged.xlsx"),
                                  sheet_name='atom_wise_rate')
     g = sns.catplot(data=atom_wise_df.sort_values('Rate', ascending=False), x="Rate", y="Atom", kind="bar",
                     alpha=0.35)
@@ -132,19 +132,19 @@ def atom_rates_graph():
 
     # iterate through the axes containers
     for c in ax.containers:
-        labels = [f'{(v.get_width())}' for v in c]
+        labels = [f'{(v.get_width()):.4f}' for v in c]
         ax.bar_label(c, labels=labels, label_type='edge')
     # fig = sns.barplot(data=project_wise_df[['Project', 'Rate']], orient='h')
     g.savefig(str(pathlib.Path(__file__).parent / "res/graphs/atom_wise_rate"))
     plt.clf()
 
-    latest = pd.read_excel(str(pathlib.Path(__file__).parent / "res/latest_revisions.xlsx"),
-                           sheet_name='latest_revisions')
+    latest = pd.read_excel(str(pathlib.Path(__file__).parent / "res/merged.xlsx"),
+                           sheet_name='merged')
     pivot_df = pd.DataFrame()
 
     for index, row in latest.iterrows():
         for a in identified_atoms_list:
-            pivot_df = pivot_df.append({"project": row['project'], "atom": a, "count": row[a] / row['loc']},
+            pivot_df = pivot_df.append({"project": row['project'], "atom": a, "count": row[a] / (row['loc']/1000)},
                                        ignore_index=True)
     pivot_df = pivot_df.pivot("atom", 'project', 'count')
     fig, ax = plt.subplots(figsize=(40, 22))  # Sample figsize in inches
@@ -173,14 +173,15 @@ def friedman_test():
     groups = []
     for a in identified_atoms_list:
         # print(row[identified_atoms_list].values)
-        groups.append(latest[a].values / latest['loc'].values)
+        groups.append(latest[a].values / (latest['loc'].values/1000))
+    print('friendman test:\n')
     print(
         stats.friedmanchisquare(groups[0], groups[1], groups[2], groups[3], groups[4], groups[5], groups[6], groups[7],
                                 groups[8], groups[9], groups[10], groups[11]))
 
     # Combine three groups into one array
 
-    print(len(groups))
+    # print(len(groups))
     data = np.array(groups)
 
     # Conduct the Nemenyi post-hoc test
@@ -189,10 +190,12 @@ def friedman_test():
     df.columns = identified_atoms_list
     df.index = identified_atoms_list
     df.to_csv(str(pathlib.Path(__file__).parent / "res/friedman_nemenyi.csv"))
+    print('\nfriendman nemenyi test:\n')
     print(df)
+    print('\n\n\n')
 
 
-# friedman_test()
+friedman_test()
 
 
 def atom_metric_correlation():
@@ -202,16 +205,27 @@ def atom_metric_correlation():
                        os.path.isdir(join(folder_absolute_path, f))]
     total_atom_df = pd.DataFrame()
     total_metric_df = pd.DataFrame()
+    # get all project all revision normalized stats in one csv
     for project_folder in project_folders:
         project_name = project_folder.split('/')[-1]
         atom_df = pd.read_csv(str(folder_absolute_path / (project_name + '_total.csv'))).sort_values('revision')
         metric_df = pd.read_csv(str(pathlib.Path(__file__).parent / f"res/ck/{project_name}_total.csv")).sort_values('revision')
+        # print(project_name, len(atom_df), len(metric_df))
         for a in identified_atoms_list:
-            atom_df[a] = atom_df[a]/atom_df['loc']
+            atom_df[a] = atom_df[a]/(metric_df['loc']/1000)
         total_atom_df = pd.concat([total_atom_df, atom_df[identified_atoms_list]])
         for a in class_metrics_list:
-            metric_df[a] = metric_df[a] / metric_df['']
+            if a in ['loc']:
+                metric_df[a] = metric_df[a] / 1000
+            else:
+                metric_df[a] = metric_df[a] / (metric_df['loc']/1000)
         total_metric_df = pd.concat([total_metric_df, metric_df[class_metrics_list]])
 
+    # print(total_atom_df.info())
+    # print(total_metric_df.info())
+
+    for col in total_metric_df.columns:
+        print('Calculating coorelation for: ', col)
+        print(total_atom_df.corrwith(total_metric_df[col]), end='\n\n')
 
 atom_metric_correlation()
