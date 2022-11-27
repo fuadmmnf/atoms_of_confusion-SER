@@ -200,10 +200,18 @@ def atom_metric_correlation():
 
     project_folders = [join(folder_absolute_path, f) for f in os.listdir(folder_absolute_path) if
                        os.path.isdir(join(folder_absolute_path, f))]
+    total_atom_df = pd.DataFrame()
+    total_metric_df = pd.DataFrame()
     for project_folder in project_folders:
         project_name = project_folder.split('/')[-1]
-        atom_df = pd.read_csv(str(folder_absolute_path / (project_name + '_total.csv')))
-        metric_df = pd.read_csv(str(pathlib.Path(__file__).parent / f"res/ck/{project_name}_total.csv"))
+        atom_df = pd.read_csv(str(folder_absolute_path / (project_name + '_total.csv'))).sort_values('revision')
+        metric_df = pd.read_csv(str(pathlib.Path(__file__).parent / f"res/ck/{project_name}_total.csv")).sort_values('revision')
+        for a in identified_atoms_list:
+            atom_df[a] = atom_df[a]/atom_df['loc']
+        total_atom_df = pd.concat([total_atom_df, atom_df[identified_atoms_list]])
+        for a in class_metrics_list:
+            metric_df[a] = metric_df[a] / metric_df['']
+        total_metric_df = pd.concat([total_metric_df, metric_df[class_metrics_list]])
 
 
 atom_metric_correlation()
